@@ -46,8 +46,8 @@ namespace ising {
 namespace square {
   
 inline alps::exp_double partition_function(double beta, double Jx, double Jy, int Lx, int Ly) {
-  double a = - beta * Jx;
-  double b = - beta * Jy;
+  double a = beta * Jx;
+  double b = beta * Jy;
   std::vector<double> gamma(2 * Lx);
   for (int k = 0; k < 2 * Lx; ++k) {
     alps::exp_double cosh_g =

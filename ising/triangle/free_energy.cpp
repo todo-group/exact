@@ -20,26 +20,27 @@
 *
 *****************************************************************************/
 
-// Calculating free energy density of square lattice Ising model
+// Calculating free energy density of triangle lattice Ising model
 
-#include "free_energy_finite.h"
+#include "free_energy.h"
 #include <boost/lexical_cast.hpp>
+#include <iostream>
 
 int main(int argc, char **argv) {
-  int L; // system size
   double t_min, t_max, t_step;
+  int Nint;
   if (argc >=5) {
-    L = boost::lexical_cast<int>(argv[1]);
-    t_min = boost::lexical_cast<double>(argv[2]);
-    t_max = boost::lexical_cast<double>(argv[3]);
-    t_step = boost::lexical_cast<double>(argv[4]);
+    t_min = boost::lexical_cast<double>(argv[1]);
+    t_max = boost::lexical_cast<double>(argv[2]);
+    t_step = boost::lexical_cast<double>(argv[3]);
+    Nint = boost::lexical_cast<double>(argv[4]);
   } else {
-    std::cin >> L >> t_min >> t_max >> t_step;
+    std::cin >> t_min >> t_max >> t_step >> Nint;
   }
-  std::cout << "# L = " << L << std::endl;
+  std::cout << "# Nint = " << Nint << std::endl;
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     std::cout << t << ' '
-              << ising::square::free_energy_density(beta, 1, 1, L, L) << std::endl;
+              << ising::triangle::free_energy_density(beta, 1, 1, 1, Nint) << std::endl;
   }
 }

@@ -41,6 +41,6 @@ int main(int argc, char **argv) {
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     std::cout << t << ' '
-              << ising::square::free_energy_density(beta, -1, -1, Nint) << std::endl;
+              << ising::square::free_energy_density(beta, 1, 1, Nint) << std::endl;
   }
 }
