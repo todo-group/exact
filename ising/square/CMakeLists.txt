@@ -1,0 +1,3 @@
+add_executable(free_energy_finite free_energy_finite.cpp)
+target_link_libraries(free_energy_finite ${ALPS_LIBRARIES})
+add_alps_test(free_energy_finite)
