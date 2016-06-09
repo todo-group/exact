@@ -28,18 +28,19 @@
 
 int main(int argc, char **argv) {
   double t_min, t_max, t_step;
-  int n;
+  int Nint;
   if (argc >=5) {
     t_min = boost::lexical_cast<double>(argv[1]);
     t_max = boost::lexical_cast<double>(argv[2]);
     t_step = boost::lexical_cast<double>(argv[3]);
-    n = boost::lexical_cast<double>(argv[4]);
+    Nint = boost::lexical_cast<double>(argv[4]);
   } else {
-    std::cin >> t_min >> t_max >> t_step >> n;
+    std::cin >> t_min >> t_max >> t_step >> Nint;
   }
+  std::cout << "# Nint = " << Nint << std::endl;
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
-    std::cout << t << ' ' << n << ' '
-              << ising::square::free_energy_density(beta, -1, -1, n) << std::endl;
+    std::cout << t << ' '
+              << ising::square::free_energy_density(beta, -1, -1, Nint) << std::endl;
   }
 }

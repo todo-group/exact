@@ -26,20 +26,20 @@
 #include <boost/lexical_cast.hpp>
 
 int main(int argc, char **argv) {
-  int length_x, length_y; // linear size in x and y directions
+  int L; // system size
   double t_min, t_max, t_step;
-  if (argc >=6) {
-    length_x = boost::lexical_cast<int>(argv[1]);
-    length_y = boost::lexical_cast<int>(argv[2]);
-    t_min = boost::lexical_cast<double>(argv[3]);
-    t_max = boost::lexical_cast<double>(argv[4]);
-    t_step = boost::lexical_cast<double>(argv[5]);
+  if (argc >=5) {
+    L = boost::lexical_cast<int>(argv[1]);
+    t_min = boost::lexical_cast<double>(argv[2]);
+    t_max = boost::lexical_cast<double>(argv[3]);
+    t_step = boost::lexical_cast<double>(argv[4]);
   } else {
-    std::cin >> length_x >> length_y >> t_min >> t_max >> t_step;
+    std::cin >> L >> t_min >> t_max >> t_step;
   }
+  std::cout << "# L = " << L << std::endl;
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
-    std::cout << length_x << ' ' << length_y << ' ' << t << ' '
-              << ising::square::free_energy_density(beta, -1, -1, length_x, length_y) << std::endl;
+    std::cout << t << ' '
+              << ising::square::free_energy_density(beta, -1, -1, L, L) << std::endl;
   }
 }

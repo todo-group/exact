@@ -43,12 +43,12 @@ inline double f(double theta, double Ka, double Kb) {
 namespace ising {
 namespace square {
   
-inline double free_energy_density(double beta, double Ja, double Jb, int n = 100) {
+inline double free_energy_density(double beta, double Ja, double Jb, int Nint = 100) {
   double Ka = beta * Ja;
   double Kb = beta * Jb;
   double g = 0.0;
-  double dt = M_PI / n;
-  for (int i = 0; i < n; ++i) {
+  double dt = M_PI / Nint;
+  for (int i = 0; i < Nint; ++i) {
     double t0 = dt * i;
     double t1 = dt * (i+1);
     g += f(t0, Ka, Kb) + 4 * f((t0 + t1) / 2, Ka, Kb) + f(t1, Ka, Kb);
