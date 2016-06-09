@@ -1,3 +1,7 @@
-add_executable(free_energy_finite free_energy_finite.cpp)
-target_link_libraries(free_energy_finite ${ALPS_LIBRARIES})
-add_alps_test(free_energy_finite)
+set(PROGS free_energy free_energy_finite)
+
+foreach(name ${PROGS})
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} ${ALPS_LIBRARIES})
+  add_alps_test(${name})
+endforeach(name)
