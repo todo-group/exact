@@ -23,12 +23,12 @@ double simpson_integration_1d(F const& func, double x0, double x1, unsigned int 
   // i == 0 || i == n
   g += func(x0) + func(x1);
   // i = 1/2 ... n-1/2
-  for (int i = 0; i < n; ++i) {
+  for (unsigned int i = 0; i < n; ++i) {
     double x = x0 + dx * (i + 0.5);
     g += 4 * func(x);
   }
   // i = 1 ... n-1
-  for (int i = 1; i < n; ++i) {
+  for (unsigned int i = 1; i < n; ++i) {
     double x = x0 + dx * i;
     g += 2 * func(x);
   }
@@ -50,44 +50,44 @@ double simpson_integration_2d(F const& func, double x0, double y0, double x1, do
     //   j == 0 || j == ny
     g += func(x, y0) + func(x, y1);
     //   j = 1/2 ... ny-1/2
-    for (int j = 0; j < ny; ++j) {
+    for (unsigned int j = 0; j < ny; ++j) {
       double y = y0 + dy * (j + 0.5);
       g += 4 * func(x, y);
     }
     //   j = 1 ... ny-1
-    for (int j = 1; j < ny; ++j) {
+    for (unsigned int j = 1; j < ny; ++j) {
       double y = y0 + dy * j;
       g += 2 * func(x, y);
     }
   }
   // i = 1/2 ... nx-1/2
-  for (int i = 0; i < nx; ++i) {
+  for (unsigned int i = 0; i < nx; ++i) {
     double x = x0 + dx * (i + 0.5);
     //   j == 0 || j == ny
     g += 4 * (func(x, y0) + func(x, y1));
     //   j = 1/2 ... ny-1/2
-    for (int j = 0; j < ny; ++j) {
+    for (unsigned int j = 0; j < ny; ++j) {
       double y = y0 + dy * (j + 0.5);
       g += 16 * func(x, y);
     }
     //   j = 1 ... ny-1
-    for (int j = 1; j < ny; ++j) {
+    for (unsigned int j = 1; j < ny; ++j) {
       double y = y0 + dy * j;
       g += 8 * func(x, y);
     }
   }
   // i = 1 ... nx-1
-  for (int i = 1; i < nx; ++i) {
+  for (unsigned int i = 1; i < nx; ++i) {
     double x = x0 + dx * i;
     //   j == 0 || j == ny
     g += 2 * (func(x, y0) + func(x, y1));
     //   j = 1/2 ... ny-1/2
-    for (int j = 0; j < ny; ++j) {
+    for (unsigned int j = 0; j < ny; ++j) {
       double y = y0 + dy * (j + 0.5);
       g += 8 * func(x, y);
     }
     //   j = 1 ... ny-1
-    for (int j = 1; j < ny; ++j) {
+    for (unsigned int j = 1; j < ny; ++j) {
       double y = y0 + dy * j;
       g += 4 * func(x, y);
     }
@@ -98,12 +98,12 @@ double simpson_integration_2d(F const& func, double x0, double y0, double x1, do
     //   j == 0 || j == ny
     g += func(x, y0) + func(x, y1);
     //   j = 1/2 ... ny-1/2
-    for (int j = 0; j < ny; ++j) {
+    for (unsigned int j = 0; j < ny; ++j) {
       double y = y0 + dy * (j + 0.5);
       g += 4 * func(x, y);
     }
     //   j = 1 ... ny-1
-    for (int j = 1; j < ny; ++j) {
+    for (unsigned int j = 1; j < ny; ++j) {
       double y = y0 + dy * j;
       g += 2 * func(x, y);
     }
