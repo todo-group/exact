@@ -9,4 +9,9 @@ include(${ALPS_USE_FILE})
 # enable C and C++ compilers
 enable_language(C CXX)
 
+enable_testing()
+include(CTest)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 add_subdirectory(ising)
