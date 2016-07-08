@@ -29,6 +29,6 @@ int main(int argc, char **argv) {
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     double f = ising::square::free_energy_density(beta, 1, 1, Nint);
-    std::cout << boost::format("%1% %2$.12e") % t % f << std::endl;
+    std::cout << boost::format("%1% %2$.11e") % t % f << std::endl;
   }
 }

@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     std::cerr << "Error: LAPACK::dsyev failed\n";
     std::exit(1);
   }
-  std::cout << boost::format("# ground state energy/L: %1$.12e") % (evals(0) / L) << std::endl;
+  std::cout << boost::format("# ground state energy/L: %1$.11e") % (evals(0) / L) << std::endl;
 
   std::cout << "# [T] [free energy/L] [energy/L] [entropy/L]\n";
   for (double t = t_min; t <= t_max; t += t_step) {
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     }
     double f = - log(z) / (beta * L);
     double e = w / z / L;
-    std::cout << boost::format("%1% %2$.12e %3$.12e %4$.12e")
+    std::cout << boost::format("%1% %2$.11e %3$.11e %4$.11e")
       % t % f % e % (beta * (e-f)) << std::endl;
   }
 }
