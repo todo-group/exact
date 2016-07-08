@@ -1,5 +1,6 @@
 # exact
 Exact free energy calculation of square/triangular-lattice Ising models
+and quantum antiferromagnet Heisenberg models
 
 ## compile
 
