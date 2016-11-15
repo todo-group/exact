@@ -10,7 +10,7 @@
 // Calculating free energy density of quantum antiferomagnetic Heisenberg chain
 
 #include "heisenberg.hpp"
-#include <alps/parapack/exp_number.h>
+#include <log_sum_exp/exp_number.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/bindings/lapack/driver/syev.hpp>
@@ -56,16 +56,17 @@ int main(int argc, char** argv) {
     std::exit(1);
   }
   std::cout << boost::format("# ground state energy/L: %1$.11e") % (evals(0) / L) << std::endl;
+  std::cout << boost::format("# first excitation gap: %1$.11e") % (evals(1) - evals(0)) << std::endl;
 
   std::cout << "# [T] [free energy/L] [energy/L] [entropy/L]\n";
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     // calculate free energy and internal energy
-    alps::exp_double z = 0;
-    alps::exp_double w = 0;
+    log_sum_exp::exp_double z = 0;
+    log_sum_exp::exp_double w = 0;
     for (int i = dim - 1; i >= 0; --i) {
-      z += alps::exp_value(-beta * evals(i));
-      w += evals(i) * alps::exp_value(-beta * evals(i));
+      z += log_sum_exp::exp_value(-beta * evals(i));
+      w += evals(i) * log_sum_exp::exp_value(-beta * evals(i));
     }
     double f = - log(z) / (beta * L);
     double e = w / z / L;

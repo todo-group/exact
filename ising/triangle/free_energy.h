@@ -14,7 +14,7 @@
 #ifndef ISING_TRIANGLE_FREE_ENERGY_H
 #define ISING_TRIANGLE_FREE_ENERGY_H
 
-#include "simpson_integration.h"
+#include <integral/simpson.hpp>
 #include <boost/throw_exception.hpp>
 #include <cmath>
 #include <stdexcept>
@@ -46,7 +46,7 @@ inline double free_energy_density(double beta, double Ja, double Jb, double Jc, 
   if (beta <= 0)
     boost::throw_exception(std::invalid_argument("beta should be positive"));
   func f(beta, Ja, Jb, Jc);
-  return - (std::log(2.0) + simpson_integration_2d(f, 0, 0, 2 * M_PI, 2 * M_PI, Nint, Nint)) / beta;
+  return - (std::log(2.0) + integral::simpson_2d(f, 0, 0, 2 * M_PI, 2 * M_PI, Nint, Nint)) / beta;
 }
 
 } // end namespace triangle

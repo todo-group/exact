@@ -14,7 +14,7 @@
 #ifndef ISING_SQUARE_FREE_ENERGY_H
 #define ISING_SQUARE_FREE_ENERGY_H
 
-#include "simpson_integration.h"
+#include <integral/simpson.hpp>
 #include <boost/throw_exception.hpp>
 #include <cmath>
 #include <stdexcept>
@@ -42,7 +42,7 @@ inline double free_energy_density(double beta, double Ja, double Jb, unsigned in
   if (beta <= 0)
     boost::throw_exception(std::invalid_argument("beta should be positive"));
   func f(beta, Ja, Jb);
-  return - (std::log(2.0) / 2 + simpson_integration_1d(f, 0, M_PI, Nint)) / beta;
+  return - (std::log(2.0) / 2 + integral::simpson_1d(f, 0, M_PI, Nint)) / beta;
 }
 
 } // end namespace square
