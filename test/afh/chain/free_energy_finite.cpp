@@ -9,8 +9,8 @@
 
 // Calculating free energy density of quantum antiferomagnetic Heisenberg chain
 
-#include "heisenberg.hpp"
-#include <log_sum_exp/exp_number.hpp>
+#include <afh/chain/heisenberg.hpp>
+#include <lse/exp_number.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/bindings/lapack/driver/syev.hpp>
@@ -62,11 +62,11 @@ int main(int argc, char** argv) {
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     // calculate free energy and internal energy
-    log_sum_exp::exp_double z = 0;
-    log_sum_exp::exp_double w = 0;
+    lse::exp_double z = 0;
+    lse::exp_double w = 0;
     for (int i = dim - 1; i >= 0; --i) {
-      z += log_sum_exp::exp_value(-beta * evals(i));
-      w += evals(i) * log_sum_exp::exp_value(-beta * evals(i));
+      z += lse::exp_value(-beta * evals(i));
+      w += evals(i) * lse::exp_value(-beta * evals(i));
     }
     double f = - log(z) / (beta * L);
     double e = w / z / L;

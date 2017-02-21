@@ -3,7 +3,4 @@ project(exact NONE)
 include(config/core.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR})
-add_subdirectory(integral)
-add_subdirectory(log_sum_exp)
-add_subdirectory(ising)
-add_subdirectory(afh)
+add_subdirectory(test)
