@@ -1,5 +1,0 @@
-set(PROGS exp_number)
-foreach(name ${PROGS})
-  add_executable(${name} ${name}.cpp)
-  add_iotest(${name})
-endforeach(name)
