@@ -11,8 +11,8 @@
 
 // reference: https://en.wikipedia.org/wiki/Square-lattice_Ising_model
 
-#ifndef ISING_SQUARE_FREE_ENERGY_H
-#define ISING_SQUARE_FREE_ENERGY_H
+#ifndef ISING_SQUARE_FREE_ENERGY_HPP
+#define ISING_SQUARE_FREE_ENERGY_HPP
 
 #include <integral/simpson.hpp>
 #include <boost/throw_exception.hpp>
@@ -48,4 +48,4 @@ inline double free_energy_density(double beta, double Ja, double Jb, unsigned in
 } // end namespace square
 } // end namespace ising
 
-#endif // ISING_SQUARE_FREE_ENERGY_H
+#endif // ISING_SQUARE_FREE_ENERGY_HPP

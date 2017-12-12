@@ -11,8 +11,8 @@
 
 // reference: B. Kastening, Phys. Rev. E 64, 066106 (2001), wrn:2011/02/10
 
-#ifndef ISING_SQUARE_FREE_ENERGY_FINITE_H
-#define ISING_SQUARE_FREE_ENERGY_FINITE_H
+#ifndef ISING_SQUARE_FREE_ENERGY_FINITE_HPP
+#define ISING_SQUARE_FREE_ENERGY_FINITE_HPP
 
 #include <lse/exp_number.hpp>
 #include <vector>
@@ -64,4 +64,4 @@ inline double free_energy_density(double beta, double Jx, double Jy, int Lx, int
 } // end namespace square
 } // end namespace ising
 
-#endif // ISING_SQUARE_FREE_ENERGY_FINITE_H
+#endif // ISING_SQUARE_FREE_ENERGY_FINITE_HPP

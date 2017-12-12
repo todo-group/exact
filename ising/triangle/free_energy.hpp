@@ -11,8 +11,8 @@
 
 // reference: R. M. F. Houtappel, Physica 16, 425 (1950)
 
-#ifndef ISING_TRIANGLE_FREE_ENERGY_H
-#define ISING_TRIANGLE_FREE_ENERGY_H
+#ifndef ISING_TRIANGLE_FREE_ENERGY_HPP
+#define ISING_TRIANGLE_FREE_ENERGY_HPP
 
 #include <integral/simpson.hpp>
 #include <boost/throw_exception.hpp>
@@ -52,4 +52,4 @@ inline double free_energy_density(double beta, double Ja, double Jb, double Jc, 
 } // end namespace triangle
 } // end namespace ising
 
-#endif // ISING_TRIANGLE_FREE_ENERGY_H
+#endif // ISING_TRIANGLE_FREE_ENERGY_HPP
