@@ -26,7 +26,8 @@ int main(int argc, char **argv) {
   }
   std::cout << "# L = " << L << std::endl;
   lattice::square lat(L, L);
-  std::vector<double> interaction(L, 1.0);
+  std::vector<double> inter(L, 1.0);
+  std::vector<double> field(L, 0.1);
   int dim = 1 << L;
   std::vector<double> v(dim);
   double beta = 1 / t;
@@ -35,7 +36,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) v[j] = 0;
     v[i] = 1;
-    lse::exp_double weight = ising::square::transfer_matrix::product_D(beta, interaction, v);
+    lse::exp_double weight = ising::square::transfer_matrix::product_D(beta, inter, field, v);
     for (int j = 0; j < dim; ++j)
       std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
     std::cout << std::endl;
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) v[j] = 0;
     v[i] = 1;
-    lse::exp_double weight = ising::square::transfer_matrix::product_U(beta, interaction, v);
+    lse::exp_double weight = ising::square::transfer_matrix::product_U(beta, inter, v);
     for (int j = 0; j < dim; ++j)
       std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
     std::cout << std::endl;
@@ -56,12 +57,11 @@ int main(int argc, char **argv) {
     for (int j = 0; j < dim; ++j) v[j] = 0;
     v[i] = 1;
     lse::exp_double weight = 1;
-    weight *= ising::square::transfer_matrix::product_D(beta / 2, interaction, v);
-    weight *= ising::square::transfer_matrix::product_U(beta, interaction, v);
-    weight *= ising::square::transfer_matrix::product_D(beta / 2, interaction, v);
+    weight *= ising::square::transfer_matrix::product_D(beta / 2, inter, field, v);
+    weight *= ising::square::transfer_matrix::product_U(beta, inter, v);
+    weight *= ising::square::transfer_matrix::product_D(beta / 2, inter, field, v);
     for (int j = 0; j < dim; ++j)
       std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
     std::cout << std::endl;
   }
-
 }
