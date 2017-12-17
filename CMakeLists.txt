@@ -11,7 +11,5 @@ add_subdirectory(test)
 install(FILES ${PROJECT_BINARY_DIR}/config/exact-config.cmake
   ${PROJECT_SOURCE_DIR}/config/use-exact.cmake
   DESTINATION share/exact/)
-install(DIRECTORY afh ising DESTINATION include/exact
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-install(DIRECTORY integral lattice lse DESTINATION include/exact
+install(DIRECTORY exact DESTINATION include
         FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
