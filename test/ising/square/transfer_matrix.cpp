@@ -9,8 +9,8 @@
 
 // Calculating free energy density of square lattice Ising model
 
-#include <ising/square/transfer_matrix.hpp>
-#include <lse/exp_number.hpp>
+#include <exact/ising/square/transfer_matrix.hpp>
+#include <exact/lse/exp_number.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>

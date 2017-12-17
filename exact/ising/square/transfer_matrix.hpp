@@ -9,8 +9,8 @@
 
 // Calculating free energy density of square lattice Ising model by the transfer matrix method
 
-#include <lattice/square.hpp>
-#include <lse/exp_number.hpp>
+#include <exact/lattice/square.hpp>
+#include <exact/lse/exp_number.hpp>
 #include <boost/array.hpp>
 #include <cmath>
 #include <vector>

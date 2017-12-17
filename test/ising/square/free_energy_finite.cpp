@@ -9,7 +9,7 @@
 
 // Calculating free energy density of square lattice Ising model
 
-#include <ising/square/free_energy_finite.hpp>
+#include <exact/ising/square/free_energy_finite.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>

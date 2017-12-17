@@ -14,7 +14,7 @@
 #ifndef ISING_SQUARE_FREE_ENERGY_HPP
 #define ISING_SQUARE_FREE_ENERGY_HPP
 
-#include <integral/simpson.hpp>
+#include <exact/integral/simpson.hpp>
 #include <boost/throw_exception.hpp>
 #include <cmath>
 #include <stdexcept>

@@ -9,7 +9,7 @@
 
 // Calculating free energy density of triangular lattice Ising model
 
-#include <ising/triangle/free_energy.hpp>
+#include <exact/ising/triangle/free_energy.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>

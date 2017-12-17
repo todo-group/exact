@@ -9,7 +9,8 @@
 
 // Calculating free energy density of square lattice Ising model
 
-#include <ising/square/counting.hpp>
+#include <exact/ising/counting.hpp>
+#include <exact/lattice/square.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -30,7 +31,7 @@ int main(int argc, char **argv) {
   std::cout << "# Lx = " << Lx <<std::endl << "# Ly = " << Ly <<std::endl;
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
-    double f = ising::square::counting::free_energy_density(beta, lat, inter, field);
+    double f = ising::counting::free_energy_density(beta, lat, inter, field);
     std::cout << boost::format("%1% %2$.11e") % t % f << std::endl;
   }
 }

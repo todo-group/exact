@@ -7,19 +7,17 @@
 *
 *****************************************************************************/
 
-// Calculating free energy density of square lattice Ising model by exact counting
+// Calculating free energy density of Ising model by exact counting
 
-#include <lattice/square.hpp>
-#include <lse/exp_number.hpp>
+#include <exact/lse/exp_number.hpp>
 #include <boost/throw_exception.hpp>
 #include <stdexcept>
 #include <vector>
 
-#ifndef ISING_SQUARE_COUNTING_HPP
-#define ISING_SQUARE_COUNTING_HPP
+#ifndef ISING_COUNTING_HPP
+#define ISING_COUNTING_HPP
 
 namespace ising {
-namespace square {
 
 struct counting {
 public:
@@ -74,7 +72,6 @@ public:
   }
 };
 
-} // end namespace square
 } // end namespace ising
 
-#endif // ISING_SQUARE_COUNTING_HPP
+#endif // ISING_COUNTING_HPP
