@@ -1,0 +1,9 @@
+#
+# exact-config.cmake
+#
+
+# The Exact root directory.
+set(EXACT_ROOT_DIR "@CMAKE_INSTALL_PREFIX@")
+
+# The location of the use-exact.cmake file.
+set(EXACT_USE_FILE "${EXACT_ROOT_DIR}/share/exact/use-exact.cmake")
