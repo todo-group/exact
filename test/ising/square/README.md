@@ -50,7 +50,7 @@ square-lattice Ising model
 * J: (uniform) coupling constant
 * H: (uniform) external field
 * t\_min, t\_max, t\_step: minimum/maximum/interval of temperature
-* calculation cost: L * 2^L * (t\_max - t\_min) / t\_step
+* calculation cost: L * (2^L)^2 * (t\_max - t\_min) / t\_step
 * memory cost: 2^L
 
 ## Ising model with random coupling and random field
@@ -94,5 +94,5 @@ square-lattice Ising model
 * J[b]: coupling constant of b-th bond
 * H[s]: external field at s-th site
 * t\_min, t\_max, t\_step: minimum/maximum/interval of temperature
-* calculation cost: L * 2^L * (t_max - t_min) / t_step
+* calculation cost: L * (2^L)^2 * (t_max - t_min) / t_step
 * memory cost: 2^L
