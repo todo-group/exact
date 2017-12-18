@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 project(exact NONE)
 include(config/core.cmake)
 
@@ -12,4 +12,4 @@ install(FILES ${PROJECT_BINARY_DIR}/config/exact-config.cmake
   ${PROJECT_SOURCE_DIR}/config/use-exact.cmake
   DESTINATION share/exact/)
 install(DIRECTORY exact DESTINATION include
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
