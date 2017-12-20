@@ -6,9 +6,9 @@
 #ifndef LATTICE_SQUARE_HPP
 #define LATTICE_SQUARE_HPP
 
+#include <vector>
 #include <boost/array.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <vector>
 
 namespace lattice {
 

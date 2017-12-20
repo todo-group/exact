@@ -1,21 +1,17 @@
-/*****************************************************************************
-*
-* Copyright (C) 1997-2016 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
-*
-* Distributed under the Boost Software License, Version 1.0. (See accompanying
-* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-*
-*****************************************************************************/
+// Copyright (C) 1997-2016 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef LSE_EXP_NUMBER_HPP
 #define LSE_EXP_NUMBER_HPP
 
-#include <boost/throw_exception.hpp>
-#include <boost/cstdint.hpp>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <boost/throw_exception.hpp>
+#include <boost/cstdint.hpp>
 
 #ifndef ALPS_INDEP_SOURCE
 # include <alps/osiris/dump.h>
