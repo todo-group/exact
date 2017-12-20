@@ -9,11 +9,11 @@
 
 // Calculating free energy density of square lattice Ising model
 
-#include <exact/ising/counting.hpp>
-#include <exact/lattice/square.hpp>
+#include <iostream>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include <iostream>
+#include "square.hpp"
+#include "counting.hpp"
 
 int main(int argc, char **argv) {
   int Lx, Ly; // system size

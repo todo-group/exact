@@ -14,10 +14,10 @@
 #ifndef ISING_TRIANGLE_FREE_ENERGY_HPP
 #define ISING_TRIANGLE_FREE_ENERGY_HPP
 
-#include <exact/integral/simpson.hpp>
-#include <boost/throw_exception.hpp>
 #include <cmath>
 #include <stdexcept>
+#include <boost/throw_exception.hpp>
+#include "simpson.hpp"
 
 namespace {
 

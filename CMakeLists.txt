@@ -5,11 +5,5 @@ include(config/core.cmake)
 configure_file(${PROJECT_SOURCE_DIR}/config/exact-config.cmake.in
   ${PROJECT_BINARY_DIR}/config/exact-config.cmake @ONLY)
 
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/integral ${PROJECT_SOURCE_DIR}/lattice ${PROJECT_SOURCE_DIR}/lse)
 add_subdirectory(test)
-
-install(FILES ${PROJECT_BINARY_DIR}/config/exact-config.cmake
-  ${PROJECT_SOURCE_DIR}/config/use-exact.cmake
-  DESTINATION share/exact/)
-install(DIRECTORY exact DESTINATION include
-  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")

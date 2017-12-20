@@ -14,8 +14,8 @@
 #ifndef ISING_SQUARE_FREE_ENERGY_FINITE_HPP
 #define ISING_SQUARE_FREE_ENERGY_FINITE_HPP
 
-#include <exact/lse/exp_number.hpp>
 #include <vector>
+#include "exp_number.hpp"
 
 namespace {
   

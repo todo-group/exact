@@ -9,11 +9,11 @@
 
 // Calculating free energy density of square lattice Ising model by the transfer matrix method
 
-#include <exact/lattice/square.hpp>
-#include <exact/lse/exp_number.hpp>
-#include <boost/array.hpp>
 #include <cmath>
 #include <vector>
+#include <boost/array.hpp>
+#include "square.hpp"
+#include "exp_number.hpp"
 
 #ifndef ISING_SQUARE_TRANSFER_MATRIX_HPP
 #define ISING_SQUARE_TRANSFER_MATRIX_HPP

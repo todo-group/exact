@@ -1,16 +1,14 @@
-/*****************************************************************************
-*
-* Copyright (C) 2016 by Synge Todo <wistaria@phy.s.u-tokyo.ac.jp>
-*
-* Distributed under the Boost Software License, Version 1.0. (See accompanying
-* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-*
-*****************************************************************************/
+// Copyright (C) 2016 by Synge Todo <wistaria@phy.s.u-tokyo.ac.jp>
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
 
 // Generate Hamiltonian of antiferromagnetic Heisenberg Model
 
 #include <vector>
 
+namespace exact {
+namespace afh {
+    
 template<typename MATRIX>
 void generate(int L, const std::vector<std::pair<int, int> >& lattice,
               MATRIX& mat) {
@@ -34,3 +32,6 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice,
     }
   }
 }
+
+} // end namespace afh
+} // end namespace exact

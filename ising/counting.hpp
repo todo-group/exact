@@ -9,10 +9,10 @@
 
 // Calculating free energy density of Ising model by exact counting
 
-#include <exact/lse/exp_number.hpp>
-#include <boost/throw_exception.hpp>
 #include <stdexcept>
 #include <vector>
+#include <boost/throw_exception.hpp>
+#include "exp_number.hpp"
 
 #ifndef ISING_COUNTING_HPP
 #define ISING_COUNTING_HPP
