@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <vector>
 #include <boost/throw_exception.hpp>
-#include "exp_number.hpp"
+#include <lse/exp_number.hpp>
 
 #ifndef ISING_COUNTING_HPP
 #define ISING_COUNTING_HPP

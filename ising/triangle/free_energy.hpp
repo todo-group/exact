@@ -17,7 +17,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <boost/throw_exception.hpp>
-#include "simpson.hpp"
+#include <integral/simpson.hpp>
 
 namespace {
 

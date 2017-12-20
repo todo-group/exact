@@ -12,8 +12,8 @@
 #include <cmath>
 #include <vector>
 #include <boost/array.hpp>
-#include "square.hpp"
-#include "exp_number.hpp"
+#include <lattice/square.hpp>
+#include <lse/exp_number.hpp>
 
 #ifndef ISING_SQUARE_TRANSFER_MATRIX_HPP
 #define ISING_SQUARE_TRANSFER_MATRIX_HPP
@@ -23,12 +23,13 @@ namespace square {
 
 struct transfer_matrix {
 public:
+  typedef lse::exp_double exp_double;
   template<typename VEC>
-  static lse::exp_double product_D(double beta, std::vector<double> const& inter_x,
+  static exp_double product_D(double beta, std::vector<double> const& inter_x,
                                    std::vector<double> const& field, VEC& v) {
     int width = inter_x.size();
     int dim = 1 << width;
-    lse::exp_double normal = 1;
+    exp_double normal = 1;
     std::vector<boost::array<double, 2> > weight(width);
     for (int b = 0; b < width; ++b) {
       double offset = std::abs(beta * inter_x[b]);
@@ -62,16 +63,16 @@ public:
   }
 
   template<typename VEC>
-  static lse::exp_double product_D(double beta, std::vector<double> const& inter_x, VEC& v) {
+  static exp_double product_D(double beta, std::vector<double> const& inter_x, VEC& v) {
     std::vector<double> field(0);
     return product_D(beta, inter_x, field, v);
   }
 
   template<typename VEC>
-  static lse::exp_double product_U(double beta, std::vector<double> const& inter_y, VEC& v) {
+  static exp_double product_U(double beta, std::vector<double> const& inter_y, VEC& v) {
     int width = inter_y.size();
     int dim = 1 << width;
-    lse::exp_double normal = 1;
+    exp_double normal = 1;
     boost::array<double, 2> weight;
     for (int s = 0; s < width; ++s) {
       double offset = std::abs(beta * inter_y[s]);
@@ -99,9 +100,9 @@ public:
     std::vector<double> inter_x(Lx), inter_y(Lx), field_x(field.size() > 0 ? Lx : 0);
     int dim = 1 << Lx;
     std::vector<double> v(dim);
-    lse::exp_double sum = 0;
+    exp_double sum = 0;
     for (int i = 0; i < dim; ++i) {
-      lse::exp_double weight = 1;
+      exp_double weight = 1;
       for (int j = 0; j < dim; ++j) v[j] = 0;
       v[i] = 1;
       for (int y = 0; y < Ly; ++y) {

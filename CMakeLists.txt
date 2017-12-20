@@ -5,5 +5,5 @@ include(config/core.cmake)
 configure_file(${PROJECT_SOURCE_DIR}/config/exact-config.cmake.in
   ${PROJECT_BINARY_DIR}/config/exact-config.cmake @ONLY)
 
-include_directories(${PROJECT_SOURCE_DIR}/integral ${PROJECT_SOURCE_DIR}/lattice ${PROJECT_SOURCE_DIR}/lse)
+include_directories(${PROJECT_SOURCE_DIR})
 add_subdirectory(test)

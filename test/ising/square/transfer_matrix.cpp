@@ -12,7 +12,6 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include "exp_number.hpp"
 #include "square/transfer_matrix.hpp"
 
 int main(int argc, char **argv) {
@@ -36,7 +35,8 @@ int main(int argc, char **argv) {
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) v[j] = 0;
     v[i] = 1;
-    lse::exp_double weight = ising::square::transfer_matrix::product_D(beta, inter, field, v);
+    ising::square::transfer_matrix::exp_double weight =
+      ising::square::transfer_matrix::product_D(beta, inter, field, v);
     for (int j = 0; j < dim; ++j)
       std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
     std::cout << std::endl;

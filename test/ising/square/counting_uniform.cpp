@@ -12,7 +12,7 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include "square.hpp"
+#include <lattice/square.hpp>
 #include "counting.hpp"
 
 int main(int argc, char **argv) {
