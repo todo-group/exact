@@ -1,4 +1,4 @@
-set(PROGS free_energy free_energy_finite counting_uniform counting_list transfer_matrix transfer_matrix_uniform transfer_matrix_list)
+set(PROGS free_energy free_energy_finite counting_uniform counting_list counting_mag transfer_matrix transfer_matrix_uniform transfer_matrix_list)
 
 foreach(name ${PROGS})
   set(target_name ising_square_${name})
