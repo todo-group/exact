@@ -10,8 +10,8 @@
 // Calculating free energy density of square lattice Ising model
 
 #include <iostream>
+#include <string>
 #include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
 #include <lattice/square.hpp>
 #include "counting.hpp"
 
@@ -20,12 +20,12 @@ int main(int argc, char **argv) {
   double J, H;
   double t_min, t_max, t_step;
   if (argc >=7) {
-    L = boost::lexical_cast<int>(argv[1]);
-    J = boost::lexical_cast<double>(argv[2]);
-    H = boost::lexical_cast<double>(argv[3]);
-    t_min = boost::lexical_cast<double>(argv[4]);
-    t_max = boost::lexical_cast<double>(argv[5]);
-    t_step = boost::lexical_cast<double>(argv[6]);
+    L = std::stoi(argv[1]);
+    J = std::stod(argv[2]);
+    H = std::stod(argv[3]);
+    t_min = std::stod(argv[4]);
+    t_max = std::stod(argv[5]);
+    t_step = std::stod(argv[6]);
   } else {
     std::cin >> L >> J >> H >> t_min >> t_max >> t_step;
   }

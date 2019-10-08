@@ -10,7 +10,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <boost/cstdint.hpp>
 
 #ifndef ALPS_INDEP_SOURCE
 # include <alps/osiris/dump.h>
@@ -269,9 +268,7 @@ inline exp_number<double> exp_value(double v) {
 
 } // end namespace exp_number
 
-#ifndef BOOST_NO_OPERATORS_IN_NAMESPACE
 namespace lse {
-#endif
 
 //
 // opertor>
@@ -471,8 +468,6 @@ alps::IDump& operator>>(alps::IDump& dp, lse::exp_number<T>& x) {
 
 #endif
 
-#ifndef BOOST_NO_OPERATORS_IN_NAMESPACE
 } // namespace lse
-#endif
 
 #endif // LSE_EXP_NUMBER_H

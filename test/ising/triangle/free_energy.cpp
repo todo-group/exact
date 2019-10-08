@@ -9,19 +9,19 @@
 
 // Calculating free energy density of triangular lattice Ising model
 
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <string>
+#include <boost/format.hpp>
 #include "triangle/free_energy.hpp"
 
 int main(int argc, char **argv) {
   double t_min, t_max, t_step;
   int Nint;
   if (argc >=5) {
-    t_min = boost::lexical_cast<double>(argv[1]);
-    t_max = boost::lexical_cast<double>(argv[2]);
-    t_step = boost::lexical_cast<double>(argv[3]);
-    Nint = boost::lexical_cast<double>(argv[4]);
+    t_min = std::stod(argv[1]);
+    t_max = std::stod(argv[2]);
+    t_step = std::stod(argv[3]);
+    Nint = std::stod(argv[4]);
   } else {
     std::cin >> t_min >> t_max >> t_step >> Nint;
   }

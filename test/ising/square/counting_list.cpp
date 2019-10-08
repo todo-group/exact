@@ -11,11 +11,10 @@
 
 #include <iostream>
 #include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
 #include <lattice/square.hpp>
 #include "counting.hpp"
 
-int main(int argc, char **argv) {
+int main() {
   int Lx, Ly; // system size
   std::vector<double> inter, field;
   double t_min, t_max, t_step;

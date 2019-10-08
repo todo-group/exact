@@ -10,16 +10,16 @@
 // Calculating free energy density of square lattice Ising model
 
 #include <iostream>
+#include <string>
 #include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
 #include "square/transfer_matrix.hpp"
 
 int main(int argc, char **argv) {
   int L; // system size
   double t;
   if (argc >=3) {
-    L = boost::lexical_cast<int>(argv[1]);
-    t = boost::lexical_cast<double>(argv[2]);
+    L = std::stoi(argv[1]);
+    t = std::stod(argv[2]);
   } else {
     std::cin >> L >> t;
   }
