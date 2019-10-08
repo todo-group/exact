@@ -10,7 +10,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <boost/throw_exception.hpp>
 #include <boost/cstdint.hpp>
 
 #ifndef ALPS_INDEP_SOURCE
@@ -90,7 +89,7 @@ public:
   value_type log() const {
     if (sign_ != is_positive) {
       std::cerr << (*this) << ' ' << sign_ << ' ' << log_ << std::endl;
-      boost::throw_exception(std::range_error("exp_number::log()"));
+      throw(std::range_error("exp_number::log()"));
     }
     return log_;
   }
@@ -106,7 +105,7 @@ public:
   }
   self_ sqrt() const {
     if (sign_ == is_negative)
-      boost::throw_exception(std::range_error("exp_number::sqrt()"));
+      throw(std::range_error("exp_number::sqrt()"));
     self_ res(*this);
     res.log_ *= 0.5;
     return res;
@@ -215,7 +214,7 @@ public:
         sign_ *= rhs.sign_;
         if (std::abs(log_/rhs.log_) < 1.0e-10) log_ = 0;
       } else {
-        boost::throw_exception(std::range_error("exp_number::operator/=()"));
+        throw(std::range_error("exp_number::operator/=()"));
       }
     }
     return *this;

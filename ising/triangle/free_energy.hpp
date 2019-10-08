@@ -16,7 +16,6 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <boost/throw_exception.hpp>
 #include <integral/simpson.hpp>
 
 namespace {
@@ -44,7 +43,7 @@ namespace triangle {
   
 inline double free_energy_density(double beta, double Ja, double Jb, double Jc, int Nint) {
   if (beta <= 0)
-    boost::throw_exception(std::invalid_argument("beta should be positive"));
+    throw(std::invalid_argument("beta should be positive"));
   func f(beta, Ja, Jb, Jc);
   return - (std::log(2.0) + integral::simpson_2d(f, 0, 0, 2 * M_PI, 2 * M_PI, Nint, Nint)) / beta;
 }

@@ -12,7 +12,6 @@
 #include <stdexcept>
 #include <vector>
 #include <boost/tuple/tuple.hpp>
-#include <boost/throw_exception.hpp>
 #include <lse/exp_number.hpp>
 
 #ifndef ISING_COUNTING_HPP
@@ -26,13 +25,13 @@ public:
   static double free_energy(double beta, LATTICE const& lat, std::vector<double> const& inter,
                             std::vector<double> const& field = std::vector<double>(0)) {
     if (beta <= 0)
-      boost::throw_exception(std::invalid_argument("beta should be positive"));
+      throw(std::invalid_argument("beta should be positive"));
     if (lat.num_sites() > 30)
-      boost::throw_exception(std::invalid_argument("too large lattice"));
+      throw(std::invalid_argument("too large lattice"));
     if (inter.size() != lat.num_bonds())
-      boost::throw_exception(std::invalid_argument("inconsitent table size of interaction"));
+      throw(std::invalid_argument("inconsitent table size of interaction"));
     if (field.size() > 0 && field.size() != lat.num_sites())
-      boost::throw_exception(std::invalid_argument("inconsitent table size of external field"));
+      throw(std::invalid_argument("inconsitent table size of external field"));
     unsigned long num_states = 1 << lat.num_sites();
     lse::exp_double sum = 0;
     for (unsigned long c = 0; c < num_states; ++c) {
@@ -58,13 +57,13 @@ public:
   magnetization(double beta, LATTICE const& lat, std::vector<double> const& inter,
                  std::vector<double> const& field = std::vector<double>(0)) {
     if (beta <= 0)
-      boost::throw_exception(std::invalid_argument("beta should be positive"));
+      throw(std::invalid_argument("beta should be positive"));
     if (lat.num_sites() > 30)
-      boost::throw_exception(std::invalid_argument("too large lattice"));
+      throw(std::invalid_argument("too large lattice"));
     if (inter.size() != lat.num_bonds())
-      boost::throw_exception(std::invalid_argument("inconsitent table size of interaction"));
+      throw(std::invalid_argument("inconsitent table size of interaction"));
     if (field.size() > 0 && field.size() != lat.num_sites())
-      boost::throw_exception(std::invalid_argument("inconsitent table size of external field"));
+      throw(std::invalid_argument("inconsitent table size of external field"));
     unsigned long num_states = 1 << lat.num_sites();
     lse::exp_double sum = 0;
     lse::exp_double sum_m1 = 0;

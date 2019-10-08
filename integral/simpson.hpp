@@ -6,7 +6,6 @@
 #ifndef INTEGRAL_SIMPSON_HPP
 #define INTEGRAL_SIMPSON_HPP
 
-#include <boost/throw_exception.hpp>
 #include <cmath>
 #include <stdexcept>
 
@@ -15,7 +14,7 @@ namespace integral {
 template<typename F>
 double simpson_1d(F const& func, double x0, double x1, unsigned int n) {
   if (n == 0 || (n % 2) != 0)
-    boost::throw_exception(std::invalid_argument("n should be positive and a multiple of two"));
+    throw(std::invalid_argument("n should be positive and a multiple of two"));
   double dx = (x1 - x0) / n;
   double g = 0.0;
   // i == 0 || i == n
@@ -38,7 +37,7 @@ template<typename F>
 double simpson_2d(F const& func, double x0, double y0, double x1, double y1,
   unsigned int nx, unsigned int ny) {
   if (nx == 0 || (nx % 2) != 0 || ny == 0 || (ny % 2) != 0)
-    boost::throw_exception(std::invalid_argument("nx and ny should be positive and a multiple of two"));
+    throw(std::invalid_argument("nx and ny should be positive and a multiple of two"));
   double dx = (x1 - x0) / nx;
   double dy = (y1 - y0) / ny;
   double g = 0.0;
