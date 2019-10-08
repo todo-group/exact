@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     double m1, m2, m3, m4;
-    boost::tie(m1, m2, m3, m4) = ising::counting::magnetization_density(beta, lat, J, H);
+    std::tie(m1, m2, m3, m4) = ising::counting::magnetization_density(beta, lat, J, H);
     std::cout << boost::format("%1% %2$.11e %3$.11e %4$.11e %5$.11e") % t % m1 % m2 % m3 % m4
               << std::endl;
   }

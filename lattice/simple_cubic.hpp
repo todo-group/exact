@@ -7,7 +7,6 @@
 #define LATTICE_SIMPLE_CUBIC_HPP
 
 #include <boost/array.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <vector>
 
 namespace lattice {
@@ -25,7 +24,7 @@ public:
     bond_phase_.resize(num_bonds());
     for (unsigned int s = 0; s < num_sites(); ++s) {
       int x, y, z;
-      boost::tie(x, y, z) = index2xyz(s);
+      std::tie(x, y, z) = index2xyz(s);
       site_phase_[s] = 2.0 * ((x + y + z) % 2) - 1.0;
       for (unsigned int k = 0; k < 6; ++k) {
         int d = 1 - 2 * (k / 3);
@@ -41,7 +40,7 @@ public:
     for (unsigned int b = 0; b < num_bonds(); ++b) {
       unsigned int s = b / 3;
       int x, y, z;
-      boost::tie(x, y, z) = index2xyz(s);
+      std::tie(x, y, z) = index2xyz(s);
       unsigned int t;
       if (b % 3 == 0) {
         t = xyz2index(x + 1, y, z);
@@ -69,8 +68,8 @@ public:
   double site_phase(unsigned int s) const { return site_phase_[s]; }
   double bond_phase(unsigned int b) const { return bond_phase_[b]; }
 protected:
-  boost::tuple<int, int, int> index2xyz(unsigned int s) const {
-    return boost::make_tuple(s % length_x_, (s / length_x_) % length_y_,
+  std::tuple<int, int, int> index2xyz(unsigned int s) const {
+    return std::make_tuple(s % length_x_, (s / length_x_) % length_y_,
                              (s / (length_x_ * length_y_)));
   }
   unsigned int xyz2index(int x, int y, int z) const {

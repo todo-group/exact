@@ -8,7 +8,6 @@
 
 #include <vector>
 #include <boost/array.hpp>
-#include <boost/tuple/tuple.hpp>
 
 namespace lattice {
 
@@ -24,7 +23,7 @@ public:
     bond_phase_.resize(num_bonds());
     for (unsigned int s = 0; s < num_sites(); ++s) {
       int x, y;
-      boost::tie(x, y) = index2xy(s);
+      std::tie(x, y) = index2xy(s);
       site_phase_[s] = 2.0 * ((x + y) % 2) - 1.0;
       for (unsigned int k = 0; k < 4; ++k) {
         int d = 1- int(k & 2);
@@ -34,7 +33,7 @@ public:
     for (unsigned int b = 0; b < num_bonds(); ++b) {
       unsigned int s = b / 2;
       int x, y;
-      boost::tie(x, y) = index2xy(s);
+      std::tie(x, y) = index2xy(s);
       unsigned int t;
       if (b % 2 == 0) {
         t = xy2index(x + 1, y); // target right
@@ -58,8 +57,8 @@ public:
   double site_phase(unsigned int s) const { return site_phase_[s]; }
   double bond_phase(unsigned int b) const { return bond_phase_[b]; }
 protected:
-  boost::tuple<int, int> index2xy(unsigned int s) const {
-    return boost::make_tuple(s % length_x_, s / length_x_);
+  std::tuple<int, int> index2xy(unsigned int s) const {
+    return std::make_tuple(s % length_x_, s / length_x_);
   }
   unsigned int xy2index(int x, int y) const {
     x += length_x_;

@@ -10,8 +10,8 @@
 // Calculating free energy density of Ising model by exact counting
 
 #include <stdexcept>
+#include <tuple>
 #include <vector>
-#include <boost/tuple/tuple.hpp>
 #include <lse/exp_number.hpp>
 
 #ifndef ISING_COUNTING_HPP
@@ -53,7 +53,7 @@ public:
   }
 
   template<typename LATTICE>
-  static boost::tuple<double, double, double, double>
+  static std::tuple<double, double, double, double>
   magnetization(double beta, LATTICE const& lat, std::vector<double> const& inter,
                  std::vector<double> const& field = std::vector<double>(0)) {
     if (beta <= 0)
@@ -93,7 +93,7 @@ public:
       sum_m3 += std::pow(m, 3.0) * weight;
       sum_m4 += std::pow(m, 4.0) * weight;
     }
-    return boost::make_tuple(sum_m1 / sum, sum_m2 / sum, sum_m3 / sum, sum_m4 / sum);
+    return std::make_tuple(sum_m1 / sum, sum_m2 / sum, sum_m3 / sum, sum_m4 / sum);
   }
 
   template<typename LATTICE>
@@ -104,7 +104,7 @@ public:
   }
 
   template<typename LATTICE>
-  static boost::tuple<double, double, double, double>
+  static std::tuple<double, double, double, double>
   magnetization(double beta, LATTICE const& lat, double J, double H = 0.0) {
     std::vector<double> inter(lat.num_bonds(), J);
     std::vector<double> field((H != 0.0) ? lat.num_sites() : 0, H);
@@ -124,23 +124,23 @@ public:
   }
 
   template<typename LATTICE>
-  static boost::tuple<double, double, double, double>
+  static std::tuple<double, double, double, double>
   magnetization_density(double beta, LATTICE const& lat,
                         std::vector<double> const& inter,
                         std::vector<double> const& field = std::vector<double>(0)) {
     double m1, m2, m3, m4;
-    boost::tie(m1, m2, m3, m4) = magnetization(beta, lat, inter, field);
-    return boost::make_tuple(m1 / lat.num_sites(), m2 / std::pow(lat.num_sites(), 2.0),
+    std::tie(m1, m2, m3, m4) = magnetization(beta, lat, inter, field);
+    return std::make_tuple(m1 / lat.num_sites(), m2 / std::pow(lat.num_sites(), 2.0),
                              m3 / std::pow(lat.num_sites(), 3.0),
                              m4 / std::pow(lat.num_sites(), 4.0));
   }
 
   template<typename LATTICE>
-  static boost::tuple<double, double, double, double>
+  static std::tuple<double, double, double, double>
   magnetization_density(double beta, LATTICE const& lat, double J, double H = 0.0) {
     double m1, m2, m3, m4;
-    boost::tie(m1, m2, m3, m4) = magnetization(beta, lat, J, H);
-    return boost::make_tuple(m1 / lat.num_sites(), m2 / std::pow(lat.num_sites(), 2.0),
+    std::tie(m1, m2, m3, m4) = magnetization(beta, lat, J, H);
+    return std::make_tuple(m1 / lat.num_sites(), m2 / std::pow(lat.num_sites(), 2.0),
                              m3 / std::pow(lat.num_sites(), 3.0),
                              m4 / std::pow(lat.num_sites(), 4.0));
   }
