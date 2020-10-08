@@ -23,10 +23,12 @@ template<typename T>
 struct func {
   func(T Ja, T Jb, T Jc) : Ja_(Ja), Jb_(Jb), Jc_(Jc) {}
   auto operator()(T beta) const -> decltype(boost::math::differentiation::make_fvar<T, 2>(beta)) {
-    std::cerr << "to be implemented\n";
-    throw(0);
+    using std::tanh;
     auto beta_fvar = boost::math::differentiation::make_fvar<T, 2>(beta);
-    return beta_fvar;
+    auto za = tanh(beta_fvar * Ja_);
+    auto zb = tanh(beta_fvar * Jb_);
+    auto zc = tanh(beta_fvar * Jc_);
+    return za * zb + zb * zc + zc * za - 1;
   }
   T Ja_, Jb_, Jc_;
 };
