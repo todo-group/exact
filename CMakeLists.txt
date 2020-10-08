@@ -19,4 +19,5 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(${PROJECT_SOURCE_DIR})
+add_subdirectory(ising)
 add_subdirectory(test)
