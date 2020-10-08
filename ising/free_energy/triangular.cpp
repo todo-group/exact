@@ -7,7 +7,7 @@
 *
 *****************************************************************************/
 
-// Critical temperature of triangular lattice Ising model
+// Free energy, energy, and specific heat of triangular lattice Ising model
 
 #include <iomanip>
 #include <iostream>
@@ -16,22 +16,28 @@
 
 int main(int argc, char **argv) {
   typedef double real_t;
-  real_t Ja, Jb, Jc;
+  real_t Ja, Jb, Jc, t;
   try {
-    if (argc == 1) {
+    if (argc == 2) {
       Ja = Jb = Jc = 1;
-    } else if (argc == 2) {
+      t = boost::lexical_cast<real_t>(argv[1]);
+    } else if (argc == 3) {
       Ja = Jb = Jc = boost::lexical_cast<real_t>(argv[1]);
-    } else if (argc == 4) {
+      t = boost::lexical_cast<real_t>(argv[2]);
+    } else if (argc == 5) {
       Ja = boost::lexical_cast<real_t>(argv[1]);
       Jb = boost::lexical_cast<real_t>(argv[2]);
       Jc = boost::lexical_cast<real_t>(argv[3]);
+      t = boost::lexical_cast<real_t>(argv[4]);
     } else throw(0);
   } catch (...) {
-    std::cerr << "Usage: " << argv[0] << " [Ja [Jb Jc]]\n";
+    std::cerr << "Usage: " << argv[0] << " T\n";
+    std::cerr << "       " << argv[0] << " J T\n";
+    std::cerr << "       " << argv[0] << " Ja Jb Jc T\n";
     return 127;
   }
-  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
-            << Ja << ' ' << Jb << ' ' << Jc << ' '
-            << ising::tc::triangular(Ja, Jb, Jc) << std::endl;
+  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10);
+  auto result = ising::triangular::infinite(1 / t, Ja, Jb, Jc);
+  std::cout << Ja << ' ' << Jb << ' ' << Jc << ' ' << t << ' ' << std::get<0>(result) << ' '
+            << std::get<1>(result) << ' ' << std::get<2>(result) << std::endl;
 }

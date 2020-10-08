@@ -32,5 +32,6 @@ int main(int argc, char **argv) {
     return 127;
   }
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
+            << Ja << ' ' << Jb << ' ' << Jc << ' '
             << ising::tc::hexagonal(Ja, Jb, Jc) << std::endl;
 }
