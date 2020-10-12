@@ -1,10 +1,9 @@
 #!/bin/sh
 
-wget -O - https://github.com/todo-group/standards/archive/develop.tar.gz | tar zxf -
+LIBS="googletest standards lattice"
 
-DIRS="config integral lattice lse"
-for d in $DIRS; do
-  mkdir -p $d
-  mv standards-develop/$d/* $d/
+BASEDIR=$(cd "$(dirname $0)"; pwd)
+for i in ${LIBS}; do
+  echo "[${i}]"
+  env BASEDIR=${BASEDIR} sh ${BASEDIR}/config/${i}.sh
 done
-rm -rf develop.tar.gz standards-develop

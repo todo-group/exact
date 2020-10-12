@@ -1,21 +1,27 @@
-// Copyright (C) 1997-2016 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+/*
+   Copyright (C) 2015-2020 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
-#ifndef LSE_EXP_NUMBER_HPP
-#define LSE_EXP_NUMBER_HPP
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+#pragma once
 
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
-#ifndef ALPS_INDEP_SOURCE
-# include <alps/osiris/dump.h>
-#endif
-
-namespace lse {
+namespace standards {
 
 namespace detail {
     
@@ -88,7 +94,7 @@ public:
   value_type log() const {
     if (sign_ != is_positive) {
       std::cerr << (*this) << ' ' << sign_ << ' ' << log_ << std::endl;
-      throw(std::range_error("exp_number::log()"));
+      throw std::range_error("exp_number::log()");
     }
     return log_;
   }
@@ -104,10 +110,20 @@ public:
   }
   self_ sqrt() const {
     if (sign_ == is_negative)
-      throw(std::range_error("exp_number::sqrt()"));
+      throw std::range_error("exp_number::sqrt()");
     self_ res(*this);
     res.log_ *= 0.5;
     return res;
+  }
+
+  static self_ exp(value_type v) {
+    return self_(v);
+  }
+  static self_ cosh(value_type v) {
+    return (self_(v) + self_(-v)) / 2;
+  }
+  static self_ sinh(value_type v) {
+    return (self_(v) - self_(-v)) / 2;
   }
 
   bool operator>(int v) const { return this->operator>(static_cast<value_type>(v)); }
@@ -213,16 +229,11 @@ public:
         sign_ *= rhs.sign_;
         if (std::abs(log_/rhs.log_) < 1.0e-10) log_ = 0;
       } else {
-        throw(std::range_error("exp_number::operator/=()"));
+        throw std::range_error("exp_number::operator/=()");
       }
     }
     return *this;
   }
-
-#ifndef ALPS_INDEP_SOURCE  
-  alps::ODump& save(alps::ODump& dp) const { dp << log_ << sign_; return dp; }
-  alps::IDump& load(alps::IDump& dp) { dp >> log_ >> sign_; return dp; }
-#endif
 
 private:
   value_type log_;
@@ -268,15 +279,15 @@ inline exp_number<double> exp_value(double v) {
 
 } // end namespace exp_number
 
-namespace lse {
+namespace standards {
 
 //
 // opertor>
 //
 
 template<typename T>
-bool operator>(T x, lse::exp_number<T> const& y) {
-  return (lse::exp_number<T>(x) > y);
+bool operator>(T x, standards::exp_number<T> const& y) {
+  return (standards::exp_number<T>(x) > y);
 }
 
 //
@@ -284,8 +295,8 @@ bool operator>(T x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-bool operator==(T x, lse::exp_number<T> const& y) {
-  return (lse::exp_number<T>(x) == y);
+bool operator==(T x, standards::exp_number<T> const& y) {
+  return (standards::exp_number<T>(x) == y);
 }
 
 //
@@ -293,16 +304,16 @@ bool operator==(T x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-bool operator>=(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
+bool operator>=(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
   return (x > y) || (x == y);
 }
 template<typename T, typename U>
-bool operator>=(lse::exp_number<T> const& x, U y) {
+bool operator>=(standards::exp_number<T> const& x, U y) {
   return (x > y) || (x == y);
 }
 template<typename T, typename U>
-bool operator>=(U x, lse::exp_number<T> const& y) {
-  lse::exp_number<T> lhs(x);
+bool operator>=(U x, standards::exp_number<T> const& y) {
+  standards::exp_number<T> lhs(x);
   return (lhs > y) || (lhs == y);
 }
 
@@ -311,15 +322,15 @@ bool operator>=(U x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-bool operator<(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
+bool operator<(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
   return (y > x);
 }
 template<typename T, typename U>
-bool operator<(lse::exp_number<T> const& x, U y) {
+bool operator<(standards::exp_number<T> const& x, U y) {
   return (y > x);
 }
 template<typename T, typename U>
-bool operator<(U x, lse::exp_number<T> const& y) {
+bool operator<(U x, standards::exp_number<T> const& y) {
   return (y > x);
 }
 
@@ -328,16 +339,16 @@ bool operator<(U x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-bool operator<=(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
+bool operator<=(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
   return (y >= x);
 }
 template<typename T, typename U>
-bool operator<=(lse::exp_number<T> const& x, U y) {
-  lse::exp_number<T> z = y;
+bool operator<=(standards::exp_number<T> const& x, U y) {
+  standards::exp_number<T> z = y;
   return (z >= x);
 }
 template<typename T, typename U>
-bool operator<=(U x, lse::exp_number<T> const& y) {
+bool operator<=(U x, standards::exp_number<T> const& y) {
   return (y >= x);
 }
 
@@ -346,22 +357,22 @@ bool operator<=(U x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-lse::exp_number<typename lse::detail::fp_promotion_traits<T, U>::type>
-operator+(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
-  typedef typename lse::detail::fp_promotion_traits<T, U>::type value_type;
-  lse::exp_number<value_type> res = x;
+standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+operator+(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
+  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
+  standards::exp_number<value_type> res = x;
   res += y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator+(lse::exp_number<T> const& x, U y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator+(standards::exp_number<T> const& x, U y) {
+  standards::exp_number<T> res = x;
   res += y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator+(U x, lse::exp_number<T> const& y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator+(U x, standards::exp_number<T> const& y) {
+  standards::exp_number<T> res = x;
   res += y;
   return res;
 }
@@ -371,22 +382,22 @@ lse::exp_number<T> operator+(U x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-lse::exp_number<typename lse::detail::fp_promotion_traits<T, U>::type>
-operator-(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
-  typedef typename lse::detail::fp_promotion_traits<T, U>::type value_type;
-  lse::exp_number<value_type> res = x;
+standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+operator-(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
+  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
+  standards::exp_number<value_type> res = x;
   res -= y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator-(lse::exp_number<T> const& x, U y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator-(standards::exp_number<T> const& x, U y) {
+  standards::exp_number<T> res = x;
   res -= y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator-(U x, lse::exp_number<T> const& y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator-(U x, standards::exp_number<T> const& y) {
+  standards::exp_number<T> res = x;
   res -= y;
   return res;
 }
@@ -396,22 +407,22 @@ lse::exp_number<T> operator-(U x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-lse::exp_number<typename lse::detail::fp_promotion_traits<T, U>::type>
-operator*(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
-  typedef typename lse::detail::fp_promotion_traits<T, U>::type value_type;
-  lse::exp_number<value_type> res = x;
+standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+operator*(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
+  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
+  standards::exp_number<value_type> res = x;
   res *= y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator*(lse::exp_number<T> const& x, U y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator*(standards::exp_number<T> const& x, U y) {
+  standards::exp_number<T> res = x;
   res *= y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator*(U x, lse::exp_number<T> const& y) {
-  lse::exp_number<T> res = y;
+standards::exp_number<T> operator*(U x, standards::exp_number<T> const& y) {
+  standards::exp_number<T> res = y;
   res *= x;
   return res;
 }
@@ -421,28 +432,28 @@ lse::exp_number<T> operator*(U x, lse::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-lse::exp_number<typename lse::detail::fp_promotion_traits<T, U>::type>
-operator/(lse::exp_number<T> const& x, lse::exp_number<U> const& y) {
-  typedef typename lse::detail::fp_promotion_traits<T, U>::type value_type;
-  lse::exp_number<value_type> res = x;
+standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+operator/(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
+  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
+  standards::exp_number<value_type> res = x;
   res /= y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator/(lse::exp_number<T> const& x, U y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator/(standards::exp_number<T> const& x, U y) {
+  standards::exp_number<T> res = x;
   res /= y;
   return res;
 }
 template<typename T, typename U>
-lse::exp_number<T> operator/(U x, lse::exp_number<T> const& y) {
-  lse::exp_number<T> res = x;
+standards::exp_number<T> operator/(U x, standards::exp_number<T> const& y) {
+  standards::exp_number<T> res = x;
   res /= y;
   return res;
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& os, lse::exp_number<T> const& x) {
+std::ostream& operator<<(std::ostream& os, standards::exp_number<T> const& x) {
   if (x > 0)
     os << "exp(" << log(x) << ')';
   else if (x < 0)
@@ -452,22 +463,4 @@ std::ostream& operator<<(std::ostream& os, lse::exp_number<T> const& x) {
   return os;
 }
 
-#ifndef ALPS_INDEP_SOURCE
-
-template<typename T>
-alps::ODump& operator<<(alps::ODump& dp, lse::exp_number<T> const& x) {
-  x.save(dp);
-  return dp;
-}
-
-template<typename T>
-alps::IDump& operator>>(alps::IDump& dp, lse::exp_number<T>& x) {
-  x.load(dp);
-  return dp;
-}
-
-#endif
-
-} // namespace lse
-
-#endif // LSE_EXP_NUMBER_H
+} // namespace standards

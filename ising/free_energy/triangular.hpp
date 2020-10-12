@@ -7,7 +7,7 @@
 *
 *****************************************************************************/
 
-// Calculating free energy, energy, and specific heat of triangular lattice Ising model
+// Free energy, energy, and specific heat of triangular lattice Ising model
 
 // reference: R. M. F. Houtappel, Physica 16, 425 (1950)
 
@@ -55,9 +55,10 @@ functor<FVAR, T> func(FVAR beta, T Ja, T Jb, T Jc) {
 template<typename T>
 inline std::tuple<T, T, T> infinite(T beta, T Ja, T Jb, T Jc) {
   typedef T real_t;
-  using std::log;
-  if (beta <= 0) throw(std::invalid_argument("beta should be positive"));
-  if (Ja * Jb * Jc <= 0) throw(std::invalid_argument("Ja * Jb * Jc should be positive"));
+  if (beta <= 0)
+    throw(std::invalid_argument("beta should be positive"));
+  if (Ja * Jb * Jc <= 0)
+    throw(std::invalid_argument("Ja * Jb * Jc should be positive"));
   real_t pi = boost::math::constants::pi<real_t>();
   auto beta_fvar = boost::math::differentiation::make_fvar<real_t, 2>(beta);
   auto logZ = log(real_t(2)) +
@@ -67,7 +68,7 @@ inline std::tuple<T, T, T> infinite(T beta, T Ja, T Jb, T Jc) {
     logZ = log(real_t(2)) +
       standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), real_t(0), real_t(0), 2*pi, 2*pi, n, n);
     if (beta * beta * abs((logZ.derivative(2) - d2) / logZ.derivative(0)) <
-        10 * std::numeric_limits<real_t>::epsilon()) break;
+        2 * std::numeric_limits<real_t>::epsilon()) break;
     d2 = logZ.derivative(2);
   }
   real_t free_energy = - logZ.derivative(0) / beta;

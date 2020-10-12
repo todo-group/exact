@@ -1,23 +1,29 @@
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(exact NONE)
 
-if(CONFIG)
-  message(STATUS "Loading configration: " ${PROJECT_SOURCE_DIR}/config/${CONFIG}.cmake)
-  include(${PROJECT_SOURCE_DIR}/config/${CONFIG}.cmake)
-endif(CONFIG)
-include(config/core.cmake)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
+include(core)
+
+include_directories(${PROJECT_SOURCE_DIR})
 
 configure_file(${PROJECT_SOURCE_DIR}/config/exact-config.cmake.in
   ${PROJECT_BINARY_DIR}/config/exact-config.cmake @ONLY)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wno-cast-function-type")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-cast-function-type")
-endif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+# Eigen3
+find_package(Eigen3 REQUIRED)
+include(${EIGEN3_USE_FILE})
 
-include_directories(${PROJECT_SOURCE_DIR})
+# Boost
+find_package(Boost)
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif(Boost_FOUND)
+
+# Google Test
+set(GOOGLETEST_VERSION 1)
+add_subdirectory(googletest)
+include_directories(googletest/include)
+enable_testing()
+
 add_subdirectory(ising)
 add_subdirectory(test)
