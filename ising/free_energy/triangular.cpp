@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     return 127;
   }
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10);
-  auto result = ising::triangular::infinite(1 / t, Ja, Jb, Jc);
+  auto result = ising::free_energy::triangular::infinite(1 / t, Ja, Jb, Jc);
   std::cout << Ja << ' ' << Jb << ' ' << Jc << ' ' << t << ' ' << std::get<0>(result) << ' '
             << std::get<1>(result) << ' ' << std::get<2>(result) << std::endl;
 }

@@ -11,8 +11,7 @@
 
 // reference: R. M. F. Houtappel, Physica 16, 425 (1950)
 
-#ifndef ISING_TRIANGULAR_INFINITE_HPP
-#define ISING_TRIANGULAR_INFINITE_HPP
+#pragma once
 
 #include <cmath>
 #include <stdexcept>
@@ -20,11 +19,15 @@
 #include <boost/math/differentiation/autodiff.hpp>
 #include <standards/simpson.hpp>
 
+namespace ising {
+namespace free_energy {
+namespace triangular {
+
 namespace {
 
 template<typename FVAR, typename T>
-struct func_t {
-  func_t(FVAR beta, T Ja, T Jb, T Jc) {
+struct functor {
+  functor(FVAR beta, T Ja, T Jb, T Jc) {
     using std::cosh; using std::sinh;
     T pi = boost::math::constants::pi<T>();
     c_ = 1.0 / (8 * pi * pi);
@@ -43,39 +46,36 @@ struct func_t {
 };
 
 template<typename FVAR, typename T>
-func_t<FVAR, T> func(FVAR beta, T Ja, T Jb, T Jc) {
-  return func_t<FVAR, T>(beta, Ja, Jb, Jc);
+functor<FVAR, T> func(FVAR beta, T Ja, T Jb, T Jc) {
+  return functor<FVAR, T>(beta, Ja, Jb, Jc);
 }
 
 }
-
-namespace ising {
-namespace triangular {
 
 template<typename T>
 inline std::tuple<T, T, T> infinite(T beta, T Ja, T Jb, T Jc) {
+  typedef T real_t;
   using std::log;
   if (beta <= 0) throw(std::invalid_argument("beta should be positive"));
   if (Ja * Jb * Jc <= 0) throw(std::invalid_argument("Ja * Jb * Jc should be positive"));
-  T pi = boost::math::constants::pi<T>();
-  auto beta_fvar = boost::math::differentiation::make_fvar<T, 2>(beta);
-  auto logZ = log(T(2)) +
-    standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), T(0), T(0), 2*pi, 2*pi, 8, 8);
-  T d2 = logZ.derivative(2);
+  real_t pi = boost::math::constants::pi<real_t>();
+  auto beta_fvar = boost::math::differentiation::make_fvar<real_t, 2>(beta);
+  auto logZ = log(real_t(2)) +
+    standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), real_t(0), real_t(0), 2*pi, 2*pi, 8, 8);
+  real_t d2 = logZ.derivative(2);
   for (unsigned long n = 16; n < 1024; n *= 2) {
-    logZ = log(T(2)) +
-      standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), T(0), T(0), 2*pi, 2*pi, n, n);
+    logZ = log(real_t(2)) +
+      standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), real_t(0), real_t(0), 2*pi, 2*pi, n, n);
     if (beta * beta * abs((logZ.derivative(2) - d2) / logZ.derivative(0)) <
-        10 * std::numeric_limits<T>::epsilon()) break;
+        10 * std::numeric_limits<real_t>::epsilon()) break;
     d2 = logZ.derivative(2);
   }
-  T free_energy = - logZ.derivative(0) / beta;
-  T energy = - logZ.derivative(1);
-  T specific_heat = beta * beta * logZ.derivative(2);
+  real_t free_energy = - logZ.derivative(0) / beta;
+  real_t energy = - logZ.derivative(1);
+  real_t specific_heat = beta * beta * logZ.derivative(2);
   return std::make_tuple(free_energy, energy, specific_heat);
 }
 
 } // end namespace triangular
+} // end namespace free_energy
 } // end namespace ising
-
-#endif // ISING_TRIANGULAR_INFINITE_HPP
