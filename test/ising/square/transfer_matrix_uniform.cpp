@@ -9,9 +9,9 @@
 
 // Calculating free energy density of square lattice Ising model
 
+#include <iomanip>
 #include <iostream>
 #include <string>
-#include <boost/format.hpp>
 #include "square/transfer_matrix.hpp"
 
 int main(int argc, char **argv) {
@@ -32,9 +32,10 @@ int main(int argc, char **argv) {
             << "# J = " << J << std::endl
             << "# H = " << H << std::endl;
   lattice::square lat(L, L);
+  std::cout << std::scientific << std::setprecision(11);
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     double f = ising::square::transfer_matrix::free_energy_density(beta, lat, J, H);
-    std::cout << boost::format("%1% %2$.11e") % t % f << std::endl;
+    std::cout << t << ' ' << f << std::endl;
   }
 }

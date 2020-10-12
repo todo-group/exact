@@ -9,9 +9,9 @@
 
 // Calculating free energy density of square lattice Ising model
 
+#include <iomanip>
 #include <iostream>
 #include <string>
-#include <boost/format.hpp>
 #include "square/transfer_matrix.hpp"
 
 int main(int argc, char **argv) {
@@ -30,7 +30,8 @@ int main(int argc, char **argv) {
   int dim = 1 << L;
   std::vector<double> v(dim);
   double beta = 1 / t;
-
+  std::cout << std::scientific << std::setprecision(5);
+  
   std::cout << "# matrix D:\n";
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) v[j] = 0;
@@ -38,7 +39,7 @@ int main(int argc, char **argv) {
     ising::square::transfer_matrix::exp_double weight =
       ising::square::transfer_matrix::product_D(beta, inter, field, v);
     for (int j = 0; j < dim; ++j)
-      std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
+      std::cout << ' ' << double(weight * v[j]);
     std::cout << std::endl;
   }
 
@@ -48,7 +49,7 @@ int main(int argc, char **argv) {
     v[i] = 1;
     lse::exp_double weight = ising::square::transfer_matrix::product_U(beta, inter, v);
     for (int j = 0; j < dim; ++j)
-      std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
+      std::cout << ' ' << double(weight * v[j]);
     std::cout << std::endl;
   }
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv) {
     weight *= ising::square::transfer_matrix::product_U(beta, inter, v);
     weight *= ising::square::transfer_matrix::product_D(beta / 2, inter, field, v);
     for (int j = 0; j < dim; ++j)
-      std::cout << boost::format(" %1$.5e") % double(weight * v[j]);
+      std::cout << ' ' << double(weight * v[j]);
     std::cout << std::endl;
   }
 }

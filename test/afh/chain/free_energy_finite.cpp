@@ -9,11 +9,11 @@
 
 // Calculating free energy density of quantum antiferomagnetic Heisenberg chain
 
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <afh/chain/heisenberg.hpp>
 #include <lse/exp_number.hpp>
-#include <boost/format.hpp>
 #include <boost/numeric/bindings/lapack/driver/syev.hpp>
 #include <boost/numeric/bindings/lower.hpp>
 #include <boost/numeric/bindings/ublas.hpp>
@@ -55,8 +55,9 @@ int main(int argc, char** argv) {
     std::cerr << "Error: LAPACK::dsyev failed\n";
     std::exit(1);
   }
-  std::cout << boost::format("# ground state energy/L: %1$.11e") % (evals(0) / L) << std::endl;
-  std::cout << boost::format("# first excitation gap: %1$.11e") % (evals(1) - evals(0)) << std::endl;
+  std::cout << std::scientific << std::setprecision(11);
+  std::cout << "# ground state energy/L: " << (evals(0) / L) << std::endl;
+  std::cout << "# first excitation gap: " << (evals(1) - evals(0)) << std::endl;
 
   std::cout << "# [T] [free energy/L] [energy/L] [entropy/L]\n";
   for (double t = t_min; t <= t_max; t += t_step) {
@@ -70,7 +71,6 @@ int main(int argc, char** argv) {
     }
     double f = - log(z) / (beta * L);
     double e = w / z / L;
-    std::cout << boost::format("%1% %2$.11e %3$.11e %4$.11e")
-      % t % f % e % (beta * (e-f)) << std::endl;
+    std::cout << t << ' ' << f << ' ' << e << ' ' << (beta * (e-f)) << std::endl;
   }
 }

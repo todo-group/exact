@@ -32,24 +32,41 @@ inline lse::exp_double sinh_value(double x) {
 namespace ising {
 namespace square {
 
-inline lse::exp_double partition_function(double beta, double Jx, double Jy, int Lx, int Ly) {
-  double a = beta * Jx;
-  double b = beta * Jy;
-  std::vector<double> gamma(2 * Lx);
+inline double partition_function(double beta, double Jx, double Jy, int Lx, int Ly) {
+  typedef double real_t;
+  auto a = beta * Jx;
+  auto b = beta * Jy;
+  auto a_bar = log((1 + cosh(2*a)) / sinh(2*a)) / 2;
+  double p0(1), p1(1), p2(1), p3(1);
+  double lp0(0), lp1(0), lp2(0), lp3(0);
   for (int k = 0; k < 2 * Lx; ++k) {
-    lse::exp_double cosh_g =
-      (cosh_value(2*a) * cosh_value(2*b) - cos(M_PI*k/Lx) * sinh_value(2*b)) / sinh_value(2*a);
-    gamma[k] = log(cosh_g + sqrt(cosh_g * cosh_g - 1));
+    auto cosh_g =
+      (cosh(2*a) * cosh(2*b) - cos(M_PI*k/Lx) * sinh(2*b)) / sinh(2*a);
+    auto gamma = log(cosh_g + sqrt(cosh_g * cosh_g - 1));
+    // if (k == 0) gamma = 2 * (a_bar - b);
+    if ((k & 1) == 0) {
+      //p2 *= exp(Ly * gamma / 2) + exp(- (Ly * gamma / 2));
+      //p3 *= exp(Ly * gamma / 2) - exp(- (Ly * gamma / 2));
+      p2 *= 2 * cosh(Ly * gamma / 2);
+      p3 *= 2 * sinh(Ly * gamma / 2);
+      lp2 += log(2 * cosh(Ly * gamma / 2));
+      lp3 += log(2 * sinh(Ly * gamma / 2));
+    } else {
+      //p0 *= exp(Ly * gamma / 2) + exp(- (Ly * gamma / 2));
+      //p1 *= exp(Ly * gamma / 2) - exp(- (Ly * gamma / 2));
+      p0 *= 2 * cosh(Ly * gamma / 2);
+      p1 *= 2 * sinh(Ly * gamma / 2);
+      lp0 += log(2 * cosh(Ly * gamma / 2));
+      lp1 += log(2 * sinh(Ly * gamma / 2));
+    }
   }
-  if (sinh_value(2*a) * sinh_value(2*b) > 1) gamma[0] = -gamma[0];
-  lse::exp_double p0(1), p1(1), p2(1), p3(1);
-  for (int k = 1; k <= Lx; ++k) {
-    p0 *= 2 * cosh_value(Ly * gamma[2*k-1] / 2);
-    p1 *= 2 * sinh_value(Ly * gamma[2*k-1] / 2);
-    p2 *= 2 * cosh_value(Ly * gamma[2*k-2] / 2);
-    p3 *= 2 * sinh_value(Ly * gamma[2*k-2] / 2);
+  auto logZ = - log(real_t(2)) / (Lx * Ly) + a + 0.5 * log(1 - exp(-4*a));
+  if (a_bar > b) {
+    logZ += (lp0 + log(1 + exp(lp1-lp0) + exp(lp2-lp0) - exp(lp3-lp0))) / (Lx * Ly);
+  } else {
+    logZ += (lp0 + log(1 + exp(lp1-lp0) + exp(lp2-lp0) + exp(lp3-lp0))) / (Lx * Ly);
   }
-  lse::exp_double z = 0.5 * pow(2 * sinh_value(2*a), Lx*Ly/2) * (p0 + p1 + p2 - p3);
+  auto z = exp(Lx * Ly * logZ);
   return z;
 }
 

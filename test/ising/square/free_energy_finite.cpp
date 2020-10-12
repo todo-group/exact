@@ -9,9 +9,9 @@
 
 // Calculating free energy density of square lattice Ising model
 
+#include <iomanip>
 #include <iostream>
 #include <string>
-#include <boost/format.hpp>
 #include "square/free_energy_finite.hpp"
 
 int main(int argc, char **argv) {
@@ -26,9 +26,10 @@ int main(int argc, char **argv) {
     std::cin >> L >> t_min >> t_max >> t_step;
   }
   std::cout << "# L = " << L << std::endl;
+  std::cout << std::scientific << std::setprecision(11);
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
     double f = ising::square::free_energy_density(beta, 1, 1, L, L);
-    std::cout << boost::format("%1% %2$.11e") % t % f << std::endl;
+    std::cout << t << ' ' << f << std::endl;
   }
 }
