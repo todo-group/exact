@@ -1,4 +1,4 @@
-set(PROGS square square_finite square_count triangular)
+set(PROGS square square_finite square_finite_tc square_count square_count_tc triangular)
 
 foreach(name ${PROGS})
   set(target_name ising_free_energy_${name})

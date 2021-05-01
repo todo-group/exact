@@ -1,6 +1,6 @@
 /*****************************************************************************
 *
-* Copyright (C) 2015-2020 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,10 +11,12 @@
 
 #include <iomanip>
 #include <iostream>
-#include <boost/lexical_cast.hpp>
+#include <boost/math/differentiation/autodiff.hpp>
 #include "square.hpp"
 
 int main(int argc, char **argv) {
+  namespace ifs = ising::free_energy::square;
+  namespace autofiff = boost::math::differentiation;
   typedef unsigned long uint_t;
   typedef double real_t;
   uint_t Lx, Ly;
@@ -23,26 +25,26 @@ int main(int argc, char **argv) {
   try {
     if (argc == 3) {
       Jx = Jy = 1;
-      Lx = Ly = boost::lexical_cast<uint_t>(argv[1]);
-      tmin = tmax = boost::lexical_cast<real_t>(argv[2]);
+      Lx = Ly = std::atoi(argv[1]);
+      tmin = tmax = std::atof(argv[2]);
     } else if (argc == 4) {
-      Lx = Ly = boost::lexical_cast<uint_t>(argv[1]);
-      Jx = Jy = boost::lexical_cast<real_t>(argv[2]);
-      tmin = tmax = boost::lexical_cast<real_t>(argv[3]);
+      Lx = Ly = std::atoi(argv[1]);
+      Jx = Jy = std::atof(argv[2]);
+      tmin = tmax = std::atof(argv[3]);
     } else if (argc == 6) {
-      Lx = boost::lexical_cast<uint_t>(argv[1]);
-      Ly = boost::lexical_cast<uint_t>(argv[2]);
-      Jx = boost::lexical_cast<real_t>(argv[3]);
-      Jy = boost::lexical_cast<real_t>(argv[4]);
-      tmin = tmax = boost::lexical_cast<real_t>(argv[5]);
+      Lx = std::atoi(argv[1]);
+      Ly = std::atoi(argv[2]);
+      Jx = std::atof(argv[3]);
+      Jy = std::atof(argv[4]);
+      tmin = tmax = std::atof(argv[5]);
     } else if (argc == 8) {
-      Lx = boost::lexical_cast<uint_t>(argv[1]);
-      Ly = boost::lexical_cast<uint_t>(argv[2]);
-      Jx = boost::lexical_cast<real_t>(argv[3]);
-      Jy = boost::lexical_cast<real_t>(argv[4]);
-      tmin = boost::lexical_cast<real_t>(argv[5]);
-      tmax = boost::lexical_cast<real_t>(argv[6]);
-      dt = boost::lexical_cast<real_t>(argv[7]);
+      Lx = std::atoi(argv[1]);
+      Ly = std::atoi(argv[2]);
+      Jx = std::atof(argv[3]);
+      Jy = std::atof(argv[4]);
+      tmin = std::atof(argv[5]);
+      tmax = std::atof(argv[6]);
+      dt = std::atof(argv[7]);
     } else throw(0);
   } catch (...) {
     std::cerr << "Usage: " << argv[0] << " L T\n";
@@ -53,9 +55,10 @@ int main(int argc, char **argv) {
   }
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10);
   for (real_t t = tmin; t < tmax + 0.01 * dt; t += dt) {
-    auto result = ising::free_energy::square::finite(Lx, Ly, Jx, Jy, 1 / t);
+    auto beta = autofiff::make_fvar<real_t, 2>(1 / t);
+    auto f = ifs::finite(Lx, Ly, Jx, Jy, beta);
     std::cout << Lx << ' ' << Ly << ' ' << Jx << ' ' << Jy << ' ' << t << ' '
-              << std::get<0>(result) << ' ' << std::get<1>(result) << ' '
-              << std::get<2>(result) << std::endl;
+              << ifs::free_energy(f, beta) << ' ' << ifs::energy(f, beta) << ' '
+              << ifs::specific_heat(f, beta) << std::endl;
   }
 }
