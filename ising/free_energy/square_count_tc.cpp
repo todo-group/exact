@@ -13,20 +13,11 @@
 #include <iostream>
 #include <boost/math/differentiation/autodiff.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
+#include "ising/mp_wrapper.hpp"
 #include "square.hpp"
 
 template<typename T, typename I>
 void calc(I Lx, I Ly) {
-  typedef T real_t;
-  namespace ifs = ising::free_energy::square;
-  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10);
-  real_t beta = log(sqrt(real_t(2)) + 1) / 2;
-  real_t f = ifs::finite_count(Lx, Ly, real_t(1), real_t(1), beta);
-  std::cout << f << ' ' << std::numeric_limits<real_t>::digits10 << std::endl;
-}
-
-template<typename T, typename I>
-void calc2(I Lx, I Ly) {
   typedef T real_t;
   namespace ifs = ising::free_energy::square;
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10);
@@ -55,9 +46,6 @@ int main(int argc, char **argv) {
   }
   calc<float>(Lx, Ly);
   calc<double>(Lx, Ly);
-  calc<mp::cpp_dec_float_50>(Lx, Ly);
-  calc<mp::cpp_dec_float_100>(Lx, Ly);
-  calc2<float>(Lx, Ly);
-  calc2<double>(Lx, Ly);
-  //// calc2<mp::cpp_dec_float_50>(Lx, Ly);
+  calc<mp_wrapper<mp::number<mp::cpp_dec_float<30>>>>(Lx, Ly);
+  calc<mp_wrapper<mp::cpp_dec_float_50>>(Lx, Ly);
 }

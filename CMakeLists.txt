@@ -14,7 +14,7 @@ find_package(Eigen3 REQUIRED)
 include(${EIGEN3_USE_FILE})
 
 # Boost
-find_package(Boost)
+find_package(Boost REQUIRED)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND)
