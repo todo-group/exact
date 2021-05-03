@@ -1,6 +1,6 @@
 /*****************************************************************************
 *
-* Copyright (C) 2015-2020 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,8 +11,7 @@
 
 // reference: L. Onsager, Phys. Rev. 65, 117 (1944)
 
-#ifndef ISING_TC_SQUARE_HPP
-#define ISING_TC_SQUARE_HPP
+#pragma once
 
 #include <cmath>
 #include <stdexcept>
@@ -24,9 +23,9 @@ namespace {
 template<typename T>
 struct func {
   func(T Jx, T Jy) : Jx_(Jx), Jy_(Jy) {}
-  auto operator()(T beta) const -> decltype(boost::math::differentiation::make_fvar<T, 2>(beta)) {
+  auto operator()(T beta) const -> decltype(boost::math::differentiation::make_fvar<T, 1>(beta)) {
     using std::sinh;
-    auto beta_fvar = boost::math::differentiation::make_fvar<T, 2>(beta);
+    auto beta_fvar = boost::math::differentiation::make_fvar<T, 1>(beta);
     return sinh(2 * Jx_ * beta_fvar) * sinh(2 * Jy_ * beta_fvar) - 1;
   }
   T Jx_, Jy_;
@@ -49,5 +48,3 @@ inline T square(T Jx, T Jy) {
 
 } // end namespace tc
 } // end namespace ising
-
-#endif // ISING_TC_SQUARE_HPP

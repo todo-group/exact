@@ -1,6 +1,6 @@
 /*****************************************************************************
 *
-* Copyright (C) 2015-2020 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,8 +11,7 @@
 
 // reference: J. Stephenson, J. of Math. Phys. 11, 420 (1970)
 
-#ifndef ISING_TC_TRIANGULAR_HPP
-#define ISING_TC_TRIANGULAR_HPP
+#pragma once
 
 #include <cmath>
 #include <stdexcept>
@@ -24,9 +23,9 @@ namespace {
 template<typename T>
 struct func {
   func(T Ja, T Jb, T Jc) : Ja_(Ja), Jb_(Jb), Jc_(Jc) {}
-  auto operator()(T beta) const -> decltype(boost::math::differentiation::make_fvar<T, 2>(beta)) {
+  auto operator()(T beta) const -> decltype(boost::math::differentiation::make_fvar<T, 1>(beta)) {
     using std::exp;
-    auto beta_fvar = boost::math::differentiation::make_fvar<T, 2>(beta);
+    auto beta_fvar = boost::math::differentiation::make_fvar<T, 1>(beta);
     auto za = exp(-2 * beta_fvar * Ja_);
     auto zb = exp(-2 * beta_fvar * Jb_);
     auto zc = exp(-2 * beta_fvar * Jc_);
@@ -50,5 +49,3 @@ inline T triangular(T Ja, T Jb, T Jc) {
 
 } // end namespace tc
 } // end namespace ising
-
-#endif // ISING_TC_TRIANGULAR_HPP

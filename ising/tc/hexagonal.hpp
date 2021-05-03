@@ -1,6 +1,6 @@
 /*****************************************************************************
 *
-* Copyright (C) 2015-2020 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -9,8 +9,7 @@
 
 // Critical temperature of hexagonal lattice Ising model
 
-#ifndef ISING_TC_HEXAGONAL_HPP
-#define ISING_TC_HEXAGONAL_HPP
+#pragma once
 
 #include <cmath>
 #include <stdexcept>
@@ -51,5 +50,3 @@ inline T hexagonal(T Ja, T Jb, T Jc) {
 
 } // end namespace tc
 } // end namespace ising
-
-#endif // ISING_TC_HEXAGONAL_HPP
