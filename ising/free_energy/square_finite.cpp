@@ -11,54 +11,102 @@
 
 #include <iomanip>
 #include <iostream>
+#include <stdexcept>
 #include <boost/math/differentiation/autodiff.hpp>
+#include <boost/multiprecision/cpp_dec_float.hpp>
+#include "ising/mp_wrapper.hpp"
 #include "square.hpp"
 
-int main(int argc, char **argv) {
-  namespace ifs = ising::free_energy::square;
-  namespace autofiff = boost::math::differentiation;
-  typedef unsigned long uint_t;
-  typedef double real_t;
-  uint_t Lx, Ly;
-  real_t Jx, Jy, tmin, tmax;
-  real_t dt = 1;
-  try {
-    if (argc == 3) {
-      Jx = Jy = 1;
-      Lx = Ly = std::atoi(argv[1]);
-      tmin = tmax = std::atof(argv[2]);
-    } else if (argc == 4) {
-      Lx = Ly = std::atoi(argv[1]);
-      Jx = Jy = std::atof(argv[2]);
-      tmin = tmax = std::atof(argv[3]);
-    } else if (argc == 6) {
-      Lx = std::atoi(argv[1]);
-      Ly = std::atoi(argv[2]);
-      Jx = std::atof(argv[3]);
-      Jy = std::atof(argv[4]);
-      tmin = tmax = std::atof(argv[5]);
-    } else if (argc == 8) {
-      Lx = std::atoi(argv[1]);
-      Ly = std::atoi(argv[2]);
-      Jx = std::atof(argv[3]);
-      Jy = std::atof(argv[4]);
-      tmin = std::atof(argv[5]);
-      tmax = std::atof(argv[6]);
-      dt = std::atof(argv[7]);
-    } else throw(0);
-  } catch (...) {
-    std::cerr << "Usage: " << argv[0] << " L T\n";
-    std::cerr << "       " << argv[0] << " L J T\n";
-    std::cerr << "       " << argv[0] << " Lx Ly Jx Jy T\n";
-    std::cerr << "       " << argv[0] << " Lx Ly Jx Jy Tmin Tmax dT\n";
-    return 127;
+struct options {
+  unsigned int prec;
+  unsigned long Lx, Ly;
+  std::string Jx, Jy, Tmin, Tmax, dT;
+  bool valid;
+  options(unsigned int argc, char *argv[]) :
+    prec(15), Jx("1"), Jy("1"), valid(true) {
+    if (argc == 1) { valid = false; return; }
+    for (unsigned i = 1; i < argc; ++i) {
+      switch (argv[i][0]) {
+      case '-' :
+        switch (argv[i][1]) {
+        case 'p' :
+          if (++i == argc) { valid = false; return; }
+          prec = std::atoi(argv[i]); break;
+        default :
+          valid = false; return;
+        }
+        break;
+      default :
+        switch (argc - i) {
+        case 2:
+          Lx = Ly = std::atol(argv[i]);
+          Jx = Jy = "1";
+          Tmin = Tmax = dT = argv[i+1];
+          return;
+        case 3:
+          Lx = Ly = std::atol(argv[i]);
+          Jx = Jy = argv[i+1];
+          Tmin = Tmax = dT = argv[i+2];
+          return;
+        case 7:
+          Lx = std::atol(argv[i]);
+          Ly = std::atol(argv[i+1]);
+          Jx = argv[i+2];
+          Jy = argv[i+3];
+          Tmin = argv[i+4];
+          Tmax = argv[i+5];
+          dT = argv[i+6];
+          return;
+        default:
+          valid = false; return;
+        }
+      }
+    }
   }
-  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10);
-  for (real_t t = tmin; t < tmax + 0.01 * dt; t += dt) {
-    auto beta = autofiff::make_fvar<real_t, 2>(1 / t);
-    auto f = ifs::finite(Lx, Ly, Jx, Jy, beta);
-    std::cout << Lx << ' ' << Ly << ' ' << Jx << ' ' << Jy << ' ' << t << ' '
+};
+
+template<typename T>
+void calc(const options& opt) {
+  typedef T real_t;
+  namespace ifs = ising::free_energy::square;
+  real_t Jx = convert<real_t>(opt.Jx);
+  real_t Jy = convert<real_t>(opt.Jy);
+  real_t Tmin = convert<real_t>(opt.Tmin);
+  real_t Tmax = convert<real_t>(opt.Tmax);
+  real_t dT = convert<real_t>(opt.dT);
+  if (Tmin > Tmax) throw(std::invalid_argument("Tmax should be larger than Tmin"));
+  if (dT <= 0) throw(std::invalid_argument("dT should be positive"));
+  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
+            << "# lattice: square\n"
+            << "# precision: " << std::numeric_limits<real_t>::digits10 << std::endl
+            << "# Lx Ly Jx Jy T 1/T F/N E/N C/N\n";
+  for (auto t = Tmin; t < Tmax + 1e-4 * dT; t += dT) {
+    auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
+    auto f = ifs::finite(opt.Lx, opt.Ly, Jx, Jy, beta);
+    std::cout << opt.Lx << ' ' << opt.Ly << ' ' << Jx << ' ' << Jy << ' '
+              << t << ' ' << (1 / t) << ' '
               << ifs::free_energy(f, beta) << ' ' << ifs::energy(f, beta) << ' '
               << ifs::specific_heat(f, beta) << std::endl;
+  }
+}
+
+int main(int argc, char **argv) {
+  namespace mp = boost::multiprecision;
+  options opt(argc, argv);
+  if (!opt.valid) {
+    std::cerr << "Usage: " << argv[0] << " [-p prec] L T\n"
+              << "       " << argv[0] << " [-p prec] L J T\n"
+              << "       " << argv[0] << " [-p prec] Lx Jy Jx Jy Tmin Tmax dT\n"; return 127;
+  }
+  if (opt.prec <= std::numeric_limits<float>::digits10) {
+    calc<float>(opt);
+  } else if (opt.prec <= std::numeric_limits<double>::digits10) {
+    calc<double>(opt);
+  } else if (opt.prec <= std::numeric_limits<mp_wrapper<mp::cpp_dec_float_50>>::digits10) {
+    calc<mp_wrapper<mp::cpp_dec_float_50>>(opt);
+  } else if (opt.prec <= std::numeric_limits<mp_wrapper<mp::cpp_dec_float_100>>::digits10) {
+    calc<mp_wrapper<mp::cpp_dec_float_100>>(opt);
+  } else {
+    std::cerr << "Error: Required precision is too high\n"; return 127;
   }
 }
