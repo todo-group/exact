@@ -67,8 +67,8 @@ struct options {
 
 template<typename T>
 void calc(const options& opt) {
+  using namespace ising::free_energy;
   typedef T real_t;
-  namespace ifs = ising::free_energy::square;
   real_t Jx = convert<real_t>(opt.Jx);
   real_t Jy = convert<real_t>(opt.Jy);
   real_t Tmin = convert<real_t>(opt.Tmin);
@@ -82,16 +82,16 @@ void calc(const options& opt) {
             << "# Lx Ly Jx Jy T 1/T F/N E/N C/N\n";
   for (auto t = Tmin; t < Tmax + 1e-4 * dT; t += dT) {
     auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
-    auto f = ifs::finite(opt.Lx, opt.Ly, Jx, Jy, beta);
+    auto f = square::finite(opt.Lx, opt.Ly, Jx, Jy, beta);
     std::cout << opt.Lx << ' ' << opt.Ly << ' ' << Jx << ' ' << Jy << ' '
               << t << ' ' << (1 / t) << ' '
-              << ifs::free_energy(f, beta) << ' ' << ifs::energy(f, beta) << ' '
-              << ifs::specific_heat(f, beta) << std::endl;
+              << free_energy(f, beta) << ' ' << energy(f, beta) << ' '
+              << specific_heat(f, beta) << std::endl;
   }
 }
 
 int main(int argc, char **argv) {
-  namespace mp = boost::multiprecision;
+  using namespace boost::multiprecision;
   options opt(argc, argv);
   if (!opt.valid) {
     std::cerr << "Usage: " << argv[0] << " [-p prec] L T\n"
@@ -102,10 +102,10 @@ int main(int argc, char **argv) {
     calc<float>(opt);
   } else if (opt.prec <= std::numeric_limits<double>::digits10) {
     calc<double>(opt);
-  } else if (opt.prec <= std::numeric_limits<mp_wrapper<mp::cpp_dec_float_50>>::digits10) {
-    calc<mp_wrapper<mp::cpp_dec_float_50>>(opt);
-  } else if (opt.prec <= std::numeric_limits<mp_wrapper<mp::cpp_dec_float_100>>::digits10) {
-    calc<mp_wrapper<mp::cpp_dec_float_100>>(opt);
+  } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_50>>::digits10) {
+    calc<mp_wrapper<cpp_dec_float_50>>(opt);
+  } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_100>>::digits10) {
+    calc<mp_wrapper<cpp_dec_float_100>>(opt);
   } else {
     std::cerr << "Error: Required precision is too high\n"; return 127;
   }

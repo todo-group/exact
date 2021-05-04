@@ -17,25 +17,11 @@
 #include <boost/math/differentiation/autodiff.hpp>
 #include <standards/simpson.hpp>
 #include <lattice/graph.hpp>
+#include "common.hpp"
 
 namespace ising {
 namespace free_energy {
 namespace square {
-
-template<typename U>
-inline typename U::root_type free_energy(U f, U) {
-  return f.derivative(0);
-}
-
-template<typename U>
-inline typename U::root_type energy(U f, U beta) {
-  return (f + beta * f.derivative(1)).derivative(0);
-}
-
-template<typename U>
-inline typename U::root_type specific_heat(U f, U beta) {
-  return -(beta * beta * (2 * f.derivative(1) + beta * f.derivative(2))).derivative(0);
-}
 
 namespace {
 
@@ -70,15 +56,15 @@ inline U infinite(T Jx, T Jy, U beta) {
     throw(std::invalid_argument("beta should be positive"));
   real_t pi = boost::math::constants::pi<real_t>();
   auto logZ = log(real_t(2)) / 2 + standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi, 8);
-  real_t d2 = logZ.derivative(2);
+  auto pz = logZ;
+  auto pe = abs(beta * beta * logZ.derivative(2) / logZ);
   for (unsigned long n = 16; n <= max_n; n *= 2) {
     logZ = log(real_t(2)) / 2 + standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi, n);
-    if (free_energy(-logZ / beta, beta) < energy(-logZ / beta, beta) &&
-        specific_heat(-logZ / beta, beta) > 0 &&
-        beta * beta * abs((logZ.derivative(2) - d2) / logZ.derivative(0)) <
-        2 * std::numeric_limits<real_t>::epsilon()) break;
+    auto pn = abs(beta * beta * (logZ - pz).derivative(2) / logZ);
+    if (pn < 2 * std::numeric_limits<real_t>::epsilon() || pn > pe) break;
     if (n == max_n) std::cerr << "Warning: integration not converge with n = " << max_n << std::endl;
-    d2 = logZ.derivative(2);
+    pz = logZ;
+    pe = pn;
   }
   return - logZ / beta;
 }
@@ -133,8 +119,8 @@ inline T finite_tc(I Lx, I Ly) {
     lp1 += (Lx * gamma_abs/2) + log(1 - exp(-(Lx * gamma_abs)));
   }
   real_t logZ = -log(real_t(2)) / (Lx * Ly) + beta + real_t(1)/2 * log(1 - exp(-4*beta))
-    + (lp0 + 2 * lp1) / (Lx * Ly);
-  //+ (lp0 + log(1 + 2 * exp(lp1-lp0))) / (Lx * Ly);
+    + (lp0 + 2 * lp1) / (Lx * Ly)
+    + (lp0 + log(1 + 2 * exp(lp1-lp0))) / (Lx * Ly);
   return - logZ / beta;
 }
 // template<typename T, typename I>

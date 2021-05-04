@@ -1,6 +1,6 @@
 /*****************************************************************************
 *
-* Copyright (C) 2015-2020 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -18,6 +18,7 @@
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/differentiation/autodiff.hpp>
 #include <standards/simpson.hpp>
+#include "common.hpp"
 
 namespace ising {
 namespace free_energy {
@@ -25,12 +26,12 @@ namespace triangular {
 
 namespace {
 
-template<typename FVAR, typename T>
+template<typename T, typename FVAR>
 struct functor {
-  functor(FVAR beta, T Ja, T Jb, T Jc) {
+  functor(T Ja, T Jb, T Jc, FVAR beta) {
     using std::cosh; using std::sinh;
     T pi = boost::math::constants::pi<T>();
-    c_ = 1.0 / (8 * pi * pi);
+    c_ = 1 / (8 * pi * pi);
     sh2a_ = sinh(2 * beta * Ja);
     sh2b_ = sinh(2 * beta * Jb);
     sh2c_ = sinh(2 * beta * Jc);
@@ -45,36 +46,36 @@ struct functor {
   FVAR sh2a_, sh2b_, sh2c_, cshabc_;
 };
 
-template<typename FVAR, typename T>
-functor<FVAR, T> func(FVAR beta, T Ja, T Jb, T Jc) {
-  return functor<FVAR, T>(beta, Ja, Jb, Jc);
+template<typename T, typename FVAR>
+functor<T, FVAR> func(T Ja, T Jb, T Jc, FVAR beta) {
+  return functor<T, FVAR>(Ja, Jb, Jc, beta);
 }
 
 }
 
-template<typename T>
-inline std::tuple<T, T, T> infinite(T beta, T Ja, T Jb, T Jc) {
+template<typename T, typename U>
+inline U infinite(T Ja, T Jb, T Jc, U beta) {
+  const unsigned long max_n = 1 << 16;
   typedef T real_t;
-  if (beta <= 0)
-    throw(std::invalid_argument("beta should be positive"));
   if (Ja * Jb * Jc <= 0)
     throw(std::invalid_argument("Ja * Jb * Jc should be positive"));
+  if (beta <= 0)
+    throw(std::invalid_argument("beta should be positive"));
   real_t pi = boost::math::constants::pi<real_t>();
-  auto beta_fvar = boost::math::differentiation::make_fvar<real_t, 2>(beta);
   auto logZ = log(real_t(2)) +
-    standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), real_t(0), real_t(0), 2*pi, 2*pi, 8, 8);
-  real_t d2 = logZ.derivative(2);
-  for (unsigned long n = 16; n < 1024; n *= 2) {
+    standards::simpson_2d(func(Ja, Jb, Jc, beta), real_t(0), real_t(0), 2*pi, 2*pi, 8, 8);
+  auto pz = logZ;
+  auto pe = abs(beta * beta * logZ.derivative(2) / logZ);
+  for (unsigned long n = 16; n <= max_n; n *= 2) {
     logZ = log(real_t(2)) +
-      standards::simpson_2d(func(beta_fvar, Ja, Jb, Jc), real_t(0), real_t(0), 2*pi, 2*pi, n, n);
-    if (beta * beta * abs((logZ.derivative(2) - d2) / logZ.derivative(0)) <
-        2 * std::numeric_limits<real_t>::epsilon()) break;
-    d2 = logZ.derivative(2);
+      standards::simpson_2d(func(Ja, Jb, Jc, beta), real_t(0), real_t(0), 2*pi, 2*pi, n, n);
+    auto pn = abs(beta * beta * (logZ - pz).derivative(2) / logZ);
+    if (pn < 2 * std::numeric_limits<real_t>::epsilon() || pn > pe) break;
+    if (n == max_n) std::cerr << "Warning: integration not converge with n = " << max_n << std::endl;
+    pz = logZ;
+    pe = pn;
   }
-  real_t free_energy = - logZ.derivative(0) / beta;
-  real_t energy = - logZ.derivative(1);
-  real_t specific_heat = beta * beta * logZ.derivative(2);
-  return std::make_tuple(free_energy, energy, specific_heat);
+  return - logZ / beta;
 }
 
 } // end namespace triangular
