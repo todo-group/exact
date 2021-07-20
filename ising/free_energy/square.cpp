@@ -65,6 +65,29 @@ struct options {
 };
 
 template<typename T>
+void calc0(const options& opt) {
+  using namespace ising::free_energy;
+  typedef T real_t;
+  real_t Jx = convert<real_t>(opt.Jx);
+  real_t Jy = convert<real_t>(opt.Jy);
+  real_t Tmin = convert<real_t>(opt.Tmin);
+  real_t Tmax = convert<real_t>(opt.Tmax);
+  real_t dT = convert<real_t>(opt.dT);
+  if (Tmin > Tmax) throw(std::invalid_argument("Tmax should be larger than Tmin"));
+  if (dT <= 0) throw(std::invalid_argument("dT should be positive"));
+  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
+            << "# lattice: square\n"
+            << "# precision: " << std::numeric_limits<real_t>::digits10 << std::endl
+            << "# Lx Ly Jx Jy T 1/T F/N E/N C/N\n";
+  for (auto t = Tmin; t < Tmax + 1e-4 * dT; t += dT) {
+    real_t beta = 1 / t;
+    auto f = square::infinite(Jx, Jy, beta);
+    std::cout << "inf inf " << Jx << ' ' << Jy << ' ' << t << ' ' << beta << ' '
+              << f << " N/A N/A" << std::endl;
+  }
+}
+
+template<typename T>
 void calc(const options& opt) {
   using namespace ising::free_energy;
   typedef T real_t;
@@ -98,13 +121,15 @@ int main(int argc, char **argv) {
               << "       " << argv[0] << " [-p prec] Jx Jy Tmin Tmax dT\n"; return 127;
   }
   if (opt.prec <= std::numeric_limits<float>::digits10) {
-    calc<float>(opt);
+    calc0<float>(opt);
   } else if (opt.prec <= std::numeric_limits<double>::digits10) {
-    calc<double>(opt);
+    calc0<double>(opt);
   } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_50>>::digits10) {
-    calc<mp_wrapper<cpp_dec_float_50>>(opt);
+    // calc0<mp_wrapper<cpp_dec_float_50>>(opt);
+    calc0<cpp_dec_float_50>(opt);
   } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_100>>::digits10) {
-    calc<mp_wrapper<cpp_dec_float_100>>(opt);
+    calc0<cpp_dec_float_100>(opt);
+    // calc0<mp_wrapper<cpp_dec_float_100>>(opt);
   } else {
     std::cerr << "Error: Required precision is too high\n"; return 127;
   }

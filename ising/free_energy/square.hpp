@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/differentiation/autodiff.hpp>
+#include <boost/math/quadrature/tanh_sinh.hpp>
 #include <standards/simpson.hpp>
 #include <lattice/graph.hpp>
 #include "common.hpp"
@@ -32,10 +33,13 @@ struct functor {
     c_ = 1 / (2 * boost::math::constants::pi<T>());
     chab_ = cosh(2 * beta * Jx) * cosh(2 * beta * Jy);
     k_ = 1 / (sinh(2 * beta * Jx) * sinh(2 * beta * Jy));
+    std::cerr << k_ << ' ' << chab_ << ' ' << std::endl;
   }
   FVAR operator()(T t) const {
     using std::cos; using std::log; using std::sqrt;
-    return c_ * log(chab_ + sqrt(1 + k_ * k_ - 2 * k_ * cos(2 * t)) / k_);
+    auto x = k_ - 1;
+    // return c_ * log(chab_ + sqrt(1 + k_ * k_ - 2 * k_ * cos(2 * t)) / k_);
+    return c_ * log(chab_ + sqrt(x * x + 4 * (1+x) * sin(t) * sin(t)) / k_);
   }
   T c_;
   FVAR chab_, k_;
@@ -55,17 +59,19 @@ inline U infinite(T Jx, T Jy, U beta) {
   if (beta <= 0)
     throw(std::invalid_argument("beta should be positive"));
   real_t pi = boost::math::constants::pi<real_t>();
-  auto logZ = log(real_t(2)) / 2 + standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi, 8);
-  auto pz = logZ;
-  auto pe = abs(beta * beta * logZ.derivative(2) / logZ);
-  for (unsigned long n = 16; n <= max_n; n *= 2) {
-    logZ = log(real_t(2)) / 2 + standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi, n);
-    auto pn = abs(beta * beta * (logZ - pz).derivative(2) / logZ);
-    if (pn < 2 * std::numeric_limits<real_t>::epsilon() || pn > pe) break;
-    if (n == max_n) std::cerr << "Warning: integration not converge with n = " << max_n << std::endl;
-    pz = logZ;
-    pe = pn;
-  }
+  // auto logZ = log(real_t(2)) / 2 + 2 * standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi / 2, 8);
+  boost::math::quadrature::tanh_sinh<real_t> integrator;
+  auto logZ = log(real_t(2)) / 2 + 2 * integrator.integrate(func(Jx, Jy, beta), 0, pi / 2);
+  // auto pz = logZ;
+  // auto pe = abs(beta * beta * logZ.derivative(2) / logZ);
+  // for (unsigned long n = 16; n <= max_n; n *= 2) {
+  //   logZ = log(real_t(2)) / 2 + 2 * standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi / 2, n);
+  //   auto pn = abs(beta * beta * (logZ - pz).derivative(2) / logZ);
+  //   if (pn < 2 * std::numeric_limits<real_t>::epsilon() || pn > pe) break;
+  //   if (n == max_n) std::cerr << "Warning: integration not converge with n = " << max_n << std::endl;
+  //   pz = logZ;
+  //   pe = pn;
+  // }
   return - logZ / beta;
 }
 
