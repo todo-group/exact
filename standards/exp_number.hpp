@@ -19,34 +19,8 @@
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
-#include <string>
 
 namespace standards {
-
-namespace detail {
-    
-template<typename T, typename U>
-struct fp_promotion_traits;
-
-#define FP_PROMOTION_TRAITS(T, U, V) \
-template<> \
-struct fp_promotion_traits<T, U> { \
-  typedef V type; \
-};
-
-FP_PROMOTION_TRAITS(float, float, float)
-FP_PROMOTION_TRAITS(float, double, double)
-FP_PROMOTION_TRAITS(float, long double, long double)
-FP_PROMOTION_TRAITS(double, float, double)
-FP_PROMOTION_TRAITS(double, double, double)
-FP_PROMOTION_TRAITS(double, long double, long double)
-FP_PROMOTION_TRAITS(long double, float, long double)
-FP_PROMOTION_TRAITS(long double, double, long double)
-FP_PROMOTION_TRAITS(long double, long double, long double)
-
-#undef FP_PROMOTION_TRAITS
-
-} // end namespace detail
 
 template<typename T>
 class exp_number {
@@ -78,6 +52,17 @@ public:
   template<typename U>
   exp_number(exp_number<U> const& v) : log_(static_cast<value_type>(v.log_)), sign_(v.sign_) {}
 
+  // named constructors
+  static self_ zero() { return self_(); }
+  static self_ unity() { return self_(value_type(1)); }
+  static self_ exp(value_type v) {
+    self_ x;
+    x.set_log(v);
+    return x;
+  }
+  static self_ cosh(value_type v) { return (self_::exp(v) + self_::exp(-v)) / 2; }
+  static self_ sinh(value_type v) { return (self_::exp(v) - self_::exp(-v)) / 2; }
+
   void set_log(value_type v) {
     log_ = v;
     sign_ = is_positive;
@@ -92,10 +77,7 @@ public:
       return 0;
   }
   value_type log() const {
-    if (sign_ != is_positive) {
-      std::cerr << (*this) << ' ' << sign_ << ' ' << log_ << std::endl;
-      throw std::range_error("exp_number::log()");
-    }
+    if (sign_ != is_positive) throw std::range_error("exp_number::log() for negative value");
     return log_;
   }
   self_ operator-() const {
@@ -109,24 +91,14 @@ public:
     return res;
   }
   self_ sqrt() const {
-    if (sign_ == is_negative)
-      throw std::range_error("exp_number::sqrt()");
+    if (sign_ == is_negative) throw std::range_error("exp_number::sqrt()");
     self_ res(*this);
     res.log_ *= 0.5;
     return res;
   }
 
-  static self_ exp(value_type v) {
-    return self_(v);
-  }
-  static self_ cosh(value_type v) {
-    return (self_(v) + self_(-v)) / 2;
-  }
-  static self_ sinh(value_type v) {
-    return (self_(v) - self_(-v)) / 2;
-  }
-
-  bool operator>(int v) const { return this->operator>(static_cast<value_type>(v)); }
+  template<typename U>
+  bool operator>(U v) const { return this->operator>(static_cast<value_type>(v)); }
   bool operator>(value_type v) const {
     if (v >= 0)
       return (sign_ == is_positive) ? (log_ > std::log(v)) : false;
@@ -143,7 +115,8 @@ public:
       return (sign_ == is_positive);
   }
 
-  bool operator==(int v) const { return this->operator==(static_cast<value_type>(v)); }
+  template<typename U>
+  bool operator==(U v) const { return this->operator==(static_cast<value_type>(v)); }
   bool operator==(value_type v) const {
     if (v > 0)
       return (sign_ == is_positive) ? (log_ == std::log(v)) : false;
@@ -162,7 +135,8 @@ public:
       return (sign_ == is_zero);
   }
 
-  self_& operator+=(int v) { return operator+=(static_cast<value_type>(v)); }
+  template<typename U>
+  self_& operator+=(U v) { return operator+=(static_cast<value_type>(v)); }
   self_& operator+=(value_type v) { return operator+=(self_(v)); }
   template<typename U>
   self_& operator+=(exp_number<U> const& rhs) {
@@ -206,12 +180,14 @@ public:
     return *this;
   }
 
-  self_& operator-=(int v) { return this->operator+=(-v); }
+  template<typename U>
+  self_& operator-=(U v) { return this->operator+=(-v); }
   self_& operator-=(value_type v) { return this->operator+=(-v); }
   template<typename U>
   self_& operator-=(exp_number<U> const& rhs) { return this->operator+=(-rhs); }
 
-  self_& operator*=(int v) { return this->operator*=(self_(v)); }
+  template<typename U>
+  self_& operator*=(U v) { return this->operator*=(self_(v)); }
   self_& operator*=(value_type v) { return this->operator*=(self_(v)); }
   self_& operator*=(self_ const& rhs) {
     log_ += rhs.log_;
@@ -220,7 +196,8 @@ public:
     return *this;
   }
 
-  self_& operator/=(int v) { return this->operator/=(self_(v)); }
+  template<typename U>
+  self_& operator/=(U v) { return this->operator/=(self_(v)); }
   self_& operator/=(value_type v) { return this->operator/=(self_(v)); }
   self_& operator/=(self_ const& rhs) {
     if (sign_ != is_zero) {
@@ -252,29 +229,18 @@ T log(exp_number<T> const& x) {
 template<typename T>
 exp_number<T> exp(exp_number<T> const& x) {
   exp_number<T> res;
-  res.set_log(static_cast<double>(x));
+  res.set_log(static_cast<T>(x));
   return res;
 }
 
-template<typename T>
-exp_number<T> pow(exp_number<T> const& x, int p) {
-  return x.pow(p);
-}
-
-template<typename T>
-exp_number<T> pow(exp_number<T> const& x, double p) {
+template<typename T, typename U>
+exp_number<T> pow(exp_number<T> const& x, U p) {
   return x.pow(p);
 }
 
 template<typename T>
 exp_number<T> sqrt(exp_number<T> const& x) {
   return x.sqrt();
-}
-
-inline exp_number<double> exp_value(double v) {
-  exp_number<double> x;
-  x.set_log(v);
-  return x;
 }
 
 } // end namespace exp_number
@@ -357,10 +323,9 @@ bool operator<=(U x, standards::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+standards::exp_number<decltype(std::declval<T>() + std::declval<U>())>
 operator+(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
-  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
-  standards::exp_number<value_type> res = x;
+  standards::exp_number<decltype(std::declval<T>() + std::declval<U>())> res = x;
   res += y;
   return res;
 }
@@ -382,10 +347,9 @@ standards::exp_number<T> operator+(U x, standards::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+standards::exp_number<decltype(std::declval<T>() + std::declval<U>())>
 operator-(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
-  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
-  standards::exp_number<value_type> res = x;
+  standards::exp_number<decltype(std::declval<T>() + std::declval<U>())> res = x;
   res -= y;
   return res;
 }
@@ -407,10 +371,9 @@ standards::exp_number<T> operator-(U x, standards::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+standards::exp_number<decltype(std::declval<T>() + std::declval<U>())>
 operator*(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
-  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
-  standards::exp_number<value_type> res = x;
+  standards::exp_number<decltype(std::declval<T>() + std::declval<U>())> res = x;
   res *= y;
   return res;
 }
@@ -432,10 +395,9 @@ standards::exp_number<T> operator*(U x, standards::exp_number<T> const& y) {
 //
 
 template<typename T, typename U>
-standards::exp_number<typename standards::detail::fp_promotion_traits<T, U>::type>
+standards::exp_number<decltype(std::declval<T>() + std::declval<U>())>
 operator/(standards::exp_number<T> const& x, standards::exp_number<U> const& y) {
-  typedef typename standards::detail::fp_promotion_traits<T, U>::type value_type;
-  standards::exp_number<value_type> res = x;
+  standards::exp_number<decltype(std::declval<T>() + std::declval<U>())> res = x;
   res /= y;
   return res;
 }

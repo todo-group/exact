@@ -26,4 +26,5 @@ include_directories(googletest/include)
 enable_testing()
 
 add_subdirectory(ising)
+add_subdirectory(afh)
 add_subdirectory(test)
