@@ -50,7 +50,7 @@ void generate(U L, const std::vector<std::pair<U, U> >& lattice, MATRIX& mat) {
     }
   }
 }
-
+  
 } // end namespace chain
 } // end namespace free_energy
 } // end namespace afh

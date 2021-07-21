@@ -1,1 +1,1 @@
-add_subdirectory(chain)
+add_subdirectory(free_energy)

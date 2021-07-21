@@ -19,15 +19,10 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include <Eigen/Dense>
-#include "standards/exp_number.hpp"
-#include "chain.hpp"
-
-typedef std::size_t uint_t;
-typedef Eigen::MatrixXd matrix_t;
+#include "chain_finite.hpp"
 
 struct options {
-  uint_t L;
+  unsigned L;
   double Tmin, Tmax, dT;
   bool valid;
   options(unsigned int argc, char *argv[]) : valid(true) {
@@ -60,34 +55,15 @@ int main(int argc, char** argv) {
   if (opt.dT <= 0) throw(std::invalid_argument("dT should be positive"));
   std::cout << "# L = " << opt.L << std::endl;
 
-  // lattice
-  std::vector<std::pair<uint_t, uint_t> > lattice;
-  for (uint_t i = 0; i < opt.L; ++i) lattice.push_back(std::make_pair(i, (i+1) % opt.L));
-  
-  // generate Hamiltonian
-  uint_t dim = 1 << opt.L;
-  matrix_t hamiltonian(dim, dim);
-  afh::free_energy::chain::generate(opt.L, lattice, hamiltonian);
-  
-  /* perform eigenvalue decomposition */
-  Eigen::SelfAdjointEigenSolver<matrix_t> eigensolver(hamiltonian);
-  auto evals = eigensolver.eigenvalues();
+  afh::free_energy::chain::finite solver(opt.L);
   std::cout << std::scientific << std::setprecision(11);
-  std::cout << "# ground state energy/L: " << (evals(0) / opt.L) << std::endl;
-  std::cout << "# first excitation gap: " << (evals(1) - evals(0)) << std::endl;
+  std::cout << "# ground state energy/L: " << solver.gs_energy() << std::endl;
+  std::cout << "# first excitation gap: " << solver.gap() << std::endl;
 
   std::cout << "# [T] [free energy/L] [energy/L] [entropy/L]\n";
   for (auto t = opt.Tmin; t < opt.Tmax + 1e-4 * opt.dT; t += opt.dT) {
-    double beta = 1 / t;
-    // calculate free energy and intternal energy
-    standards::exp_double z = 0;
-    standards::exp_double w = 0;
-    for (uint_t i = 0; i < dim; ++i) {
-      z += standards::exp_double::exp(-beta * evals(dim - i));
-      w += evals(dim - i) * standards::exp_double::exp(-beta * evals(dim - i));
-    }
-    double f = - log(z) / (beta * opt.L);
-    double e = w / z / opt.L;
-    std::cout << t << ' ' << f << ' ' << e << ' ' << (beta * (e-f)) << std::endl;
+    double f, e, s;
+    std::tie(f, e, s) = solver.free_energy(t);
+    std::cout << t << ' ' << f << ' ' << e << ' ' << s << std::endl;
   }
 }
