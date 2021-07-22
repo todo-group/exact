@@ -16,14 +16,16 @@
 
 // Density of state of square lattice Ising model
 
-#include <iostream>
-#include "options.hpp"
+#include <gtest/gtest.h>
 #include "square.hpp"
 
-int main(int argc, char **argv) {
-  options opt(argc, argv);
-  if (!opt.valid) return 127;
-  auto dos = ising::dos::square::count(opt.Lx, opt.Ly);
-  for (auto v : dos) std::cout << v << ' ';
-  std::cout << std::endl;
+TEST(ising_dos_square, count) {
+  auto dos = ising::dos::square::count(4, 4);
+  EXPECT_EQ(33, dos.size());
+  EXPECT_EQ(2, dos[0]);
+  EXPECT_EQ(0, dos[2]);
+  EXPECT_EQ(32, dos[4]);
+  EXPECT_EQ(64, dos[6]);
+  EXPECT_EQ(20524, dos[16]);
+  EXPECT_EQ(2, dos[32]);
 }
