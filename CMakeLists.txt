@@ -27,4 +27,3 @@ enable_testing()
 
 add_subdirectory(ising)
 add_subdirectory(afh)
-add_subdirectory(test)
