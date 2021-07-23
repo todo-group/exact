@@ -37,9 +37,9 @@ struct functor {
   }
   FVAR operator()(T t) const {
     using std::cos; using std::log; using std::sqrt;
-    auto x = k_ - 1;
-    // return c_ * log(chab_ + sqrt(1 + k_ * k_ - 2 * k_ * cos(2 * t)) / k_);
-    return c_ * log(chab_ + sqrt(x * x + 4 * (1+x) * sin(t) * sin(t)) / k_);
+    // auto x = k_ - 1;
+    return c_ * log(chab_ + sqrt(1 + k_ * k_ - 2 * k_ * cos(2 * t)) / k_);
+    // return c_ * log(chab_ + sqrt(x * x + 4 * (1+x) * sin(t) * sin(t)) / k_);
   }
   T c_;
   FVAR chab_, k_;

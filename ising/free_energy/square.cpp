@@ -14,58 +14,11 @@
 #include <boost/math/differentiation/autodiff.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include "ising/mp_wrapper.hpp"
+#include "options.hpp"
 #include "square.hpp"
 
-struct options {
-  unsigned int prec;
-  std::string Jx, Jy, Tmin, Tmax, dT;
-  bool valid;
-  options(unsigned int argc, char *argv[]) :
-    prec(15), Jx("1"), Jy("1"), valid(true) {
-    if (argc == 1) { valid = false; return; }
-    for (unsigned i = 1; i < argc; ++i) {
-      switch (argv[i][0]) {
-      case '-' :
-        switch (argv[i][1]) {
-        case 'p' :
-          if (++i == argc) { valid = false; return; }
-          prec = std::atoi(argv[i]); break;
-        default :
-          valid = false; return;
-        }
-        break;
-      default :
-        switch (argc - i) {
-        case 1:
-          Jx = Jy = "1";
-          Tmin = Tmax = dT = argv[i];
-          return;
-        case 2:
-          Jx = Jy = argv[i];
-          Tmin = Tmax = dT = argv[i+1];
-          return;
-        case 3:
-          Jx = argv[i];
-          Jy = argv[i+1];
-          Tmin = Tmax = dT = argv[i+2];
-          return;
-        case 5:
-          Jx = argv[i];
-          Jy = argv[i+1];
-          Tmin = argv[i+2];
-          Tmax = argv[i+3];
-          dT = argv[i+4];
-          return;
-        default:
-          valid = false; return;
-        }
-      }
-    }
-  }
-};
-
 template<typename T>
-void calc0(const options& opt) {
+void calc0(const options2& opt) {
   using namespace ising::free_energy;
   typedef T real_t;
   real_t Jx = convert<real_t>(opt.Jx);
@@ -88,7 +41,7 @@ void calc0(const options& opt) {
 }
 
 template<typename T>
-void calc(const options& opt) {
+void calc(const options2& opt) {
   using namespace ising::free_energy;
   typedef T real_t;
   real_t Jx = convert<real_t>(opt.Jx);
@@ -113,23 +66,18 @@ void calc(const options& opt) {
 
 int main(int argc, char **argv) {
   using namespace boost::multiprecision;
-  options opt(argc, argv);
-  if (!opt.valid) {
-    std::cerr << "Usage: " << argv[0] << " [-p prec] T\n"
-              << "       " << argv[0] << " [-p prec] J T\n"
-              << "       " << argv[0] << " [-p prec] Jx Jy T\n"
-              << "       " << argv[0] << " [-p prec] Jx Jy Tmin Tmax dT\n"; return 127;
-  }
+  options2 opt(argc, argv);
+  if (!opt.valid) return 127;
   if (opt.prec <= std::numeric_limits<float>::digits10) {
-    calc0<float>(opt);
+    calc<float>(opt);
   } else if (opt.prec <= std::numeric_limits<double>::digits10) {
-    calc0<double>(opt);
+    calc<double>(opt);
   } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_50>>::digits10) {
-    // calc0<mp_wrapper<cpp_dec_float_50>>(opt);
     calc0<cpp_dec_float_50>(opt);
+    // calc<mp_wrapper<cpp_dec_float_50>>(opt);
   } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_100>>::digits10) {
     calc0<cpp_dec_float_100>(opt);
-    // calc0<mp_wrapper<cpp_dec_float_100>>(opt);
+    // calc<mp_wrapper<cpp_dec_float_100>>(opt);
   } else {
     std::cerr << "Error: Required precision is too high\n"; return 127;
   }
