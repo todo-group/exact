@@ -1,11 +1,18 @@
-/*****************************************************************************
-*
-* Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
-*
-* Distributed under the Boost Software License, Version 1.0. (See accompanying
-* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-*
-*****************************************************************************/
+/*
+   Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 // Free energy, energy, and specific heat of square lattice Ising model
 
@@ -14,6 +21,7 @@
 #include <boost/math/differentiation/autodiff.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include "ising/mp_wrapper.hpp"
+#include "ising/tc/square.hpp"
 #include "options.hpp"
 #include "square.hpp"
 
@@ -23,9 +31,15 @@ void calc0(const options2& opt) {
   typedef T real_t;
   real_t Jx = convert<real_t>(opt.Jx);
   real_t Jy = convert<real_t>(opt.Jy);
-  real_t Tmin = convert<real_t>(opt.Tmin);
-  real_t Tmax = convert<real_t>(opt.Tmax);
-  real_t dT = convert<real_t>(opt.dT);
+  real_t Tmin, Tmax, dT;
+  if (opt.Tmin == "tc" || opt.Tmin == "Tc") {
+    Tmin = Tmax = dT = ising::tc::square(Jx, Jy);
+  } else {
+    Tmin = convert<real_t>(opt.Tmin);
+    Tmax = convert<real_t>(opt.Tmax);
+    dT = convert<real_t>(opt.dT);
+  }
+  if (Tmin < 0 || Tmax < 0) throw(std::invalid_argument("Temperature should be positive"));
   if (Tmin > Tmax) throw(std::invalid_argument("Tmax should be larger than Tmin"));
   if (dT <= 0) throw(std::invalid_argument("dT should be positive"));
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
@@ -46,9 +60,15 @@ void calc(const options2& opt) {
   typedef T real_t;
   real_t Jx = convert<real_t>(opt.Jx);
   real_t Jy = convert<real_t>(opt.Jy);
-  real_t Tmin = convert<real_t>(opt.Tmin);
-  real_t Tmax = convert<real_t>(opt.Tmax);
-  real_t dT = convert<real_t>(opt.dT);
+  real_t Tmin, Tmax, dT;
+  if (opt.Tmin == "tc" || opt.Tmin == "Tc") {
+    Tmin = Tmax = dT = ising::tc::square(Jx, Jy);
+  } else {
+    Tmin = convert<real_t>(opt.Tmin);
+    Tmax = convert<real_t>(opt.Tmax);
+    dT = convert<real_t>(opt.dT);
+  }
+  if (Tmin < 0 || Tmax < 0) throw(std::invalid_argument("Temperature should be positive"));
   if (Tmin > Tmax) throw(std::invalid_argument("Tmax should be larger than Tmin"));
   if (dT <= 0) throw(std::invalid_argument("dT should be positive"));
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
@@ -73,10 +93,10 @@ int main(int argc, char **argv) {
   } else if (opt.prec <= std::numeric_limits<double>::digits10) {
     calc<double>(opt);
   } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_50>>::digits10) {
-    calc0<cpp_dec_float_50>(opt);
+    calc0<mp_wrapper<cpp_dec_float_50>>(opt);
     // calc<mp_wrapper<cpp_dec_float_50>>(opt);
   } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_100>>::digits10) {
-    calc0<cpp_dec_float_100>(opt);
+    calc0<mp_wrapper<cpp_dec_float_100>>(opt);
     // calc<mp_wrapper<cpp_dec_float_100>>(opt);
   } else {
     std::cerr << "Error: Required precision is too high\n"; return 127;

@@ -246,8 +246,8 @@ decltype(std::declval<F>()(std::declval<Real>(), std::declval<Real>())) tanh_sin
         else
            xc = x - 1;
         result_type yp, ym;
-        yp = i <= max_right_position ? f(x, -xc) : 0;
-        ym = i <= max_left_position ? f(-x, xc) : 0;
+        yp = i <= max_right_position ? f(x, -xc) : result_type(0);
+        ym = i <= max_left_position ? f(-x, xc) : result_type(0);
         I0 += (yp + ym)*w;
         L1_I0 += static_cast<Real>((abs(yp) + abs(ym))*w);
     }
@@ -329,8 +329,8 @@ decltype(std::declval<F>()(std::declval<Real>(), std::declval<Real>())) tanh_sin
                xc = x - 1;
             }
 
-            result_type yp = j > max_right_index ? 0 : f(x, -xc);
-            result_type ym = j > max_left_index ? 0 : f(-x, xc);
+            result_type yp = j > max_right_index ? result_type(0) : f(x, -xc);
+            result_type ym = j > max_left_index ? result_type(0) : f(-x, xc);
             result_type term = (yp + ym)*w;
             sum += term;
 

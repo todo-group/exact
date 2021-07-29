@@ -222,6 +222,9 @@ template<class T>
 mp_wrapper<T> frexp(const mp_wrapper<T>& t, int* u) { return mp_wrapper<T>(frexp(t.base, u)); }
 
 template<class T>
+int ilogb(const mp_wrapper<T>& t) { return ilogb(t.base); }
+
+template<class T>
 mp_wrapper<T> ldexp(const mp_wrapper<T>& t, int u) { return mp_wrapper<T>(ldexp(t.base, u)); }
 
 template<class T>
@@ -237,6 +240,9 @@ mp_wrapper<T> pow(const mp_wrapper<T>& t, const mp_wrapper<T>& u) {
 
 template<class T>
 mp_wrapper<T> round(const mp_wrapper<T>& t) { return mp_wrapper<T>(round(t.base)); }
+
+template<class T>
+mp_wrapper<T> scalbn(const mp_wrapper<T>& t, int n) { return mp_wrapper<T>(scalbn(t.base, n)); }
 
 template<class T>
 mp_wrapper<T> sin(const mp_wrapper<T>& t) { return mp_wrapper<T>(sin(t.base)); }

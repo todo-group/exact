@@ -1,11 +1,18 @@
-/*****************************************************************************
-*
-* Copyright (C) 2015-2021 by Synge Todo <wistaria@phy.s.u-tokyo.ac.jp>
-*
-* Distributed under the Boost Software License, Version 1.0. (See accompanying
-* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-*
-*****************************************************************************/
+/*
+   Copyright (C) 2015-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 // Free energy, energy, and specific heat of square lattice Ising model
 
@@ -28,26 +35,48 @@ namespace {
 
 template<typename T, typename FVAR>
 struct functor {
-  functor(T Jx, T Jy, FVAR beta) {
+  typedef T real_t;
+  typedef FVAR fvar_t;
+  functor(real_t Jx, real_t Jy, fvar_t beta) {
     using std::cosh; using std::sinh;
-    c_ = 1 / (2 * boost::math::constants::pi<T>());
+    c_ = 1 / (2 * boost::math::constants::pi<real_t>());
     chab_ = cosh(2 * beta * Jx) * cosh(2 * beta * Jy);
     k_ = 1 / (sinh(2 * beta * Jx) * sinh(2 * beta * Jy));
-    std::cerr << k_ << ' ' << chab_ << ' ' << std::endl;
   }
-  FVAR operator()(T t) const {
+  fvar_t operator()(real_t t) const {
     using std::cos; using std::log; using std::sqrt;
-    // auto x = k_ - 1;
     return c_ * log(chab_ + sqrt(1 + k_ * k_ - 2 * k_ * cos(2 * t)) / k_);
-    // return c_ * log(chab_ + sqrt(x * x + 4 * (1+x) * sin(t) * sin(t)) / k_);
   }
-  T c_;
-  FVAR chab_, k_;
+  real_t c_;
+  fvar_t chab_, k_;
+};
+
+template<typename T, std::size_t Order>
+struct functor<T, boost::math::differentiation::detail::fvar<T, Order>> {
+  typedef T real_t;
+  typedef boost::math::differentiation::detail::fvar<real_t, Order> fvar_t;
+  functor(real_t Jx, real_t Jy, fvar_t beta) {
+    using std::cosh; using std::sinh;
+    c_ = 1 / (2 * boost::math::constants::pi<real_t>());
+    chab_ = cosh(2 * beta * Jx) * cosh(2 * beta * Jy);
+    k_ = 1 / (sinh(2 * beta * Jx) * sinh(2 * beta * Jy));
+  }
+  fvar_t operator()(real_t t) const {
+    using std::abs; using std::cos; using std::log; using std::sqrt;
+    auto r = sqrt(1 + k_ * k_ - 2 * k_ * cos(2 * t)) / k_;
+    if (abs(r.derivative(1)) > std::numeric_limits<real_t>::max()) {
+      auto x = boost::math::differentiation::make_fvar<real_t, 2>(real_t(0));
+      r = fvar_t(r.derivative(0)) + std::numeric_limits<real_t>::max() * x * x;
+    }
+    return c_ * log(chab_ + r);
+  }
+  real_t c_;
+  fvar_t chab_, k_;
 };
 
 template<typename T, typename FVAR>
 functor<T, FVAR> func(T Jx, T Jy, FVAR beta) { return functor<T, FVAR>(Jx, Jy, beta); }
-  
+
 }
 
 template<typename T, typename U>
@@ -59,19 +88,8 @@ inline U infinite(T Jx, T Jy, U beta) {
   if (beta <= 0)
     throw(std::invalid_argument("beta should be positive"));
   real_t pi = boost::math::constants::pi<real_t>();
-  // auto logZ = log(real_t(2)) / 2 + 2 * standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi / 2, 8);
   boost::math::quadrature::tanh_sinh<real_t> integrator;
   auto logZ = log(real_t(2)) / 2 + 2 * integrator.integrate(func(Jx, Jy, beta), 0, pi / 2);
-  // auto pz = logZ;
-  // auto pe = abs(beta * beta * logZ.derivative(2) / logZ);
-  // for (unsigned long n = 16; n <= max_n; n *= 2) {
-  //   logZ = log(real_t(2)) / 2 + 2 * standards::simpson_1d(func(Jx, Jy, beta), real_t(0), pi / 2, n);
-  //   auto pn = abs(beta * beta * (logZ - pz).derivative(2) / logZ);
-  //   if (pn < 2 * std::numeric_limits<real_t>::epsilon() || pn > pe) break;
-  //   if (n == max_n) std::cerr << "Warning: integration not converge with n = " << max_n << std::endl;
-  //   pz = logZ;
-  //   pe = pn;
-  // }
   return - logZ / beta;
 }
 
@@ -88,22 +106,25 @@ inline U finite(I Lx, I Ly, T Jx, T Jy, U beta) {
   auto a = beta * Jx;
   auto b = beta * Jy;
   value_t lp0(0), lp1(0), lp2(0), lp3(0);
+  auto gamma0 = log((1 + cosh(2*a)) / sinh(2*a)) - 2*b;
   for (int_t k = 0; k < 2 * Ly; ++k) {
     auto cosh_g = (cosh(2*a) * cosh(2*b) - cos(pi * k / Ly) * sinh(2*b)) / sinh(2*a);
-    auto gamma_abs = log(cosh_g + sqrt(cosh_g * cosh_g - 1));
+    auto gamma = (k == 0) ? abs(gamma0) : (log(cosh_g + sqrt(cosh_g * cosh_g - 1)));
     if ((k & 1) == 1) {
-      lp0 += (Lx * gamma_abs/2) + log(1 + exp(-(Lx * gamma_abs)));
-      lp1 += (Lx * gamma_abs/2) + log(1 - exp(-(Lx * gamma_abs)));
+      lp0 += (Lx * gamma/2) + log(1 + exp(-(Lx * gamma)));
+      lp1 += (Lx * gamma/2) + log(1 - exp(-(Lx * gamma)));
     } else {
-      lp2 += (Lx * gamma_abs/2) + log(1 + exp(-(Lx * gamma_abs)));
-      lp3 += (Lx * gamma_abs/2) + log(1 - exp(-(Lx * gamma_abs)));
+      lp2 += (Lx * gamma/2) + log(1 + exp(-(Lx * gamma)));
+      lp3 += (Lx * gamma/2) + log(1 - exp(-(Lx * gamma)));
     }
   }
   auto logZ = -log(real_t(2)) / (Lx * Ly) + a + real_t(1)/2 * log(1 - exp(-4*a));
-  if (sinh(2*a) * sinh(2*b) < value_t(1)) {
+  if (gamma0 > 0) {
     logZ += (lp0 + log(1 + exp(lp1-lp0) + exp(lp2-lp0) - exp(lp3-lp0))) / (Lx * Ly);
-  } else {
+  } else if (gamma0 < 0) {
     logZ += (lp0 + log(1 + exp(lp1-lp0) + exp(lp2-lp0) + exp(lp3-lp0))) / (Lx * Ly);
+  } else {
+    logZ += (lp0 + log(1 + exp(lp1-lp0) + exp(lp2-lp0))) / (Lx * Ly);
   }
   return - logZ / beta;
 }
@@ -129,39 +150,6 @@ inline T finite_tc(I Lx, I Ly) {
     + (lp0 + log(1 + 2 * exp(lp1-lp0))) / (Lx * Ly);
   return - logZ / beta;
 }
-// template<typename T, typename I>
-// inline std::tuple<T, T, T> finite_tc(I Lx, I Ly) {
-//   typedef I int_t;
-//   typedef T real_t;
-//   if (Lx <= 0 || Ly <= 0)
-//     throw(std::invalid_argument("Lx and Ly should be positive"));
-//   auto pi = boost::math::constants::pi<real_t>();
-//   auto beta = log(sqrt(real_t(2))+1)/2;
-//   auto beta_fvar = boost::math::differentiation::make_fvar<real_t, 2>(beta);
-//   decltype(beta_fvar) lp0(0), lp1(0);
-//   auto x = boost::math::differentiation::make_fvar<real_t, 2>(0);
-//   auto one = real_t(1);
-//   auto two = real_t(2);
-//   auto cosh_a = sqrt(2) + 2 * x + 2 * sqrt(2) * x * x;
-//   auto sinh_a = 1 + 2 * sqrt(2) * x + 2 * x * x;
-//   std::cout << cosh_a << ' ' << sinh_a << std::endl;
-//   for (int_t k = 1; k < 2 * Ly; k += 2) {
-//     auto c = (2 - cos(pi * k / Ly));
-//     auto cosh_g = c + 8 * x * x;
-//     auto gamma_abs = log(cosh_g + sqrt(cosh_g * cosh_g - 1));
-//     std::cout << k << ' ' << cosh_g << ' ' << sqrt(cosh_g * cosh_g - 1) << ' ' << gamma_abs << ' ' << log(1 + exp(-(Lx * gamma_abs))) << ' ' << log(1 - exp(-(Lx * gamma_abs))) << std::endl;
-//     lp0 += (Lx * gamma_abs/2) + log(1 + exp(-(Lx * gamma_abs)));
-//     lp1 += (Lx * gamma_abs/2) + log(1 - exp(-(Lx * gamma_abs)));
-//   }
-//   std::cout << lp0 << ' ' << lp1 << std::endl;
-//   auto logZ = -log(real_t(2)) / (Lx * Ly) + beta_fvar + real_t(1)/2 * log(1 - exp(-4*beta_fvar))
-//     + (lp0 + log(1 + 2 * exp(lp1-lp0))) / (Lx * Ly);
-//   std::cout << logZ << std::endl;
-//   real_t free_energy = - logZ.derivative(0) / beta;
-//   real_t energy = - logZ.derivative(1);
-//   real_t specific_heat = beta * beta * logZ.derivative(2);
-//   return std::make_tuple(free_energy, energy, specific_heat);
-// }
 
 template<typename I, typename T, typename U>
 inline U finite_count(I Lx, I Ly, T Jx, T Jy, U beta) {

@@ -1,13 +1,13 @@
 set(PF ising_free_energy)
 
-set(PROGS square square_count square_finite square_finite_tc triangular)
+set(PROGS square square_count square_finite triangular)
 foreach(name ${PROGS})
   set(target_name ${PF}_${name})
   add_executable(${target_name} ${name}.cpp)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
 endforeach(name)
 
-set(PROGS square_count_gt)
+set(PROGS square_gt square_count_gt square_finite_gt)
 foreach(name ${PROGS})
   set(target_name ${PF}_${name})
   add_executable(${target_name} ${name}.cpp)
