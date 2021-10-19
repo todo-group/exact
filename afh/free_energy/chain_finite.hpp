@@ -33,7 +33,7 @@ public:
     // lattice
     std::vector<std::pair<uint_t, uint_t> > lattice;
     for (uint_t i = 0; i < L_; ++i) lattice.push_back(std::make_pair(i, (i+1) % L_));
-  
+    
     // generate Hamiltonian
     uint_t dim = 1 << L_;
     matrix_t hamiltonian(dim, dim);
@@ -52,8 +52,9 @@ public:
     standards::exp_double z = 0;
     standards::exp_double w = 0;
     for (uint_t i = 0; i < dim; ++i) {
-      z += standards::exp_double::exp(-beta * eigenvalues_(dim - i));
-      w += eigenvalues_(dim - i) * standards::exp_double::exp(-beta * eigenvalues_(dim - i));
+      uint_t j = dim - i - 1;
+      z += standards::exp_double::exp(-beta * eigenvalues_(j));
+      w += eigenvalues_(j) * standards::exp_double::exp(-beta * eigenvalues_(j));
     }
     double f = - log(z) / (beta * L_);
     double e = w / z / L_;
