@@ -1,0 +1,14 @@
+#!/bin/sh
+
+BUILD_DIR=@PROJECT_BINARY_DIR@
+
+set -x
+
+for L in 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536; do  
+  ${BUILD_DIR}/ising/free_energy/square_finite $L tc >> result-p15.dat
+  ${BUILD_DIR}/ising/free_energy/square_finite -p 50 $L tc >> result-p50.dat
+done
+
+${BUILD_DIR}/ising/free_energy/square tc >> result-p15.dat
+${BUILD_DIR}/ising/free_energy/square -p 50 tc >> result-p50.dat
+

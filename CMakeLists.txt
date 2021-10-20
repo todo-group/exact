@@ -30,3 +30,4 @@ include_directories(lattice)
 
 add_subdirectory(ising)
 add_subdirectory(afh)
+add_subdirectory(gallery)

@@ -1,7 +1,11 @@
 # exact
 
-* Exact calculation of critical temperature, free energy, and dos of two-dimensional ferromagnetic Ising models
-* Exact calculation of free energy, gap, and entropy quantum antiferromagnetic Heisenberg chain
+* Numerically exact calculation of critical temperature of two-dimensional Ising models (ising/tc)
+* Numerically exact calculation of free energy, energy, and specific heat of two-dimensional (finite-size/inifinit-size) Ising models (ising/free_energy)
+* Numerically exact calculation of density of state of two-dimensional finite-size Ising model (ising/dos)
+* Numerically exact calculation of free energy, gap, and entropy quantum antiferromagnetic Heisenberg chain (afh/free_energy)
+
+Multi-precision calculation is supported in ising/tc and ising/free_energy.
 
 ## Prerequisites
 
@@ -10,14 +14,21 @@
 * Eigen https://eigen.tuxfamily.org
 * Boost https://www.boost.org
 
-## Compile
+## Compile & test
 
 ```
 mkdir build
 cd build
 cmake ..
 make
+ctest
 ```
+
+## Gallery
+
+* gallery/ising-square-tc
+
+  * calculation of the free energy, energy, and specific heat of the finite-size square Ising model at the critical temperature for L=2,4,8,...,65536 (with double precision and 50-digit precision)
 
 ## License
 
