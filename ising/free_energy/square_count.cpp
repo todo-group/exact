@@ -46,14 +46,17 @@ void calc(const options2f& opt) {
   std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
             << "# lattice: square\n"
             << "# precision: " << std::numeric_limits<real_t>::digits10 << std::endl
-            << "# Lx Ly Jx Jy T 1/T F/N E/N C/N\n";
+            << "# Lx Ly Jx Jy T 1/T F/N E/N C/N M2/N2\n";
   for (auto t = Tmin; t < Tmax + 1e-4 * dT; t += dT) {
-    auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
-    auto f = square::finite_count(opt.Lx, opt.Ly, Jx, Jy, beta);
+    auto vars = boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
+    auto& beta = std::get<0>(vars);
+    auto& h = std::get<1>(vars);
+    auto f = square::finite_count(opt.Lx, opt.Ly, Jx, Jy, beta, h);
     std::cout << opt.Lx << ' ' << opt.Ly << ' ' << Jx << ' ' << Jy << ' '
               << t << ' ' << (1 / t) << ' '
-              << free_energy(f, beta) << ' ' << energy(f, beta) << ' '
-              << specific_heat(f, beta) << std::endl;
+              << free_energy(f, beta, h) << ' ' << energy(f, beta, h) << ' '
+              << specific_heat(f, beta, h) << ' ' << magnetization2(f, beta, h)
+              << std::endl;
   }
 }
 

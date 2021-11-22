@@ -32,9 +32,12 @@ TEST(IsingFreeEnergy, SquareCount0) {
   auto Jx = convert<real_t>("1.5");
   auto Jy = convert<real_t>("2.5");
   auto t = convert<real_t>("2");
-  auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
-  auto f = square::finite_count(Lx, Ly, Jx, Jy, beta);
-  EXPECT_DOUBLE_EQ(-4.087359662653047e+00, free_energy(f, beta));
-  EXPECT_DOUBLE_EQ(-3.994108759068211e+00, energy(f, beta));
-  EXPECT_DOUBLE_EQ(2.452622208849045e-02, specific_heat(f, beta));
+  auto vars = boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
+  auto& beta = std::get<0>(vars);
+  auto& h = std::get<1>(vars);
+  auto f = square::finite_count(Lx, Ly, Jx, Jy, beta, h);
+  EXPECT_DOUBLE_EQ(-4.087359662653047e+00, free_energy(f, beta, h));
+  EXPECT_DOUBLE_EQ(-3.994108759068211e+00, energy(f, beta, h));
+  EXPECT_DOUBLE_EQ(2.452622208849045e-02, specific_heat(f, beta, h));
+  EXPECT_DOUBLE_EQ(1.597700713244840e+01, magnetization2(f, beta, h));
 }

@@ -151,11 +151,11 @@ inline T finite_tc(I Lx, I Ly) {
   return - logZ / beta;
 }
 
-template<typename I, typename T, typename U>
-inline U finite_count(I Lx, I Ly, T Jx, T Jy, U beta) {
+template<typename I, typename T, typename U, typename W>
+inline boost::math::differentiation::promote<U, W> finite_count(I Lx, I Ly, T Jx, T Jy, U beta, W h) {
   typedef I int_t;
   typedef T real_t;
-  typedef U value_t;
+  typedef boost::math::differentiation::promote<U, W> value_t;
   if (Lx <= 0 || Ly <= 0)
     throw(std::invalid_argument("Lx and Ly should be positive"));
   if (Jx <= 0 || Jy <= 0)
@@ -182,7 +182,11 @@ inline U finite_count(I Lx, I Ly, T Jx, T Jy, U beta) {
       real_t cj = real_t(2) * ((c >> graph.target(b)) & 1) - 1;
       energy -= J[graph.bond_type(b)] * ci * cj;
     }
-    Z += exp((gs_energy - energy) * beta);
+    real_t mag = 0;
+    for (int_t s = 0; s < graph.num_sites(); ++s) {
+      mag += real_t(2) * ((c >> s) & 1) - 1;
+    }
+    Z += exp((gs_energy - energy - h * mag) * beta);
   }
   return (-log(Z)/beta + gs_energy) / (Lx * Ly);
 }

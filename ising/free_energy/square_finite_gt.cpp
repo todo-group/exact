@@ -32,13 +32,15 @@ TEST(IsingFreeEnergy, SquareFinite0) {
   auto Jx = convert<real_t>("1.5");
   auto Jy = convert<real_t>("2.5");
   auto t = convert<real_t>("2");
-  auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
-  auto fc = square::finite_count(Lx, Ly, Jx, Jy, beta);
+  auto vars = boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
+  auto& beta = std::get<0>(vars);
+  auto& h = std::get<1>(vars);
+  auto fc = square::finite_count(Lx, Ly, Jx, Jy, beta, h);
   auto ff = square::finite(Lx, Ly, Jx, Jy, beta);
   double eps = 1e-12;
-  EXPECT_TRUE(abs(free_energy(fc, beta) - free_energy(ff, beta)) < eps);
-  EXPECT_TRUE(abs(energy(fc, beta) - energy(ff, beta)) < eps);
-  EXPECT_TRUE(abs(specific_heat(fc, beta) - specific_heat(ff, beta)) < eps);
+  EXPECT_TRUE(abs(free_energy(fc, beta, h) - free_energy(ff, beta)) < eps);
+  EXPECT_TRUE(abs(energy(fc, beta, h) - energy(ff, beta)) < eps);
+  EXPECT_TRUE(abs(specific_heat(fc, beta, h) - specific_heat(ff, beta)) < eps);
 }
 
 TEST(IsingFreeEnergy, SquareFinite1) {
@@ -48,13 +50,15 @@ TEST(IsingFreeEnergy, SquareFinite1) {
   auto Jx = convert<real_t>("1.5");
   auto Jy = convert<real_t>("2.5");
   auto t = convert<real_t>("2");
-  auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
-  auto fc = square::finite_count(Lx, Ly, Jx, Jy, beta);
+  auto vars = boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
+  auto& beta = std::get<0>(vars);
+  auto& h = std::get<1>(vars);
+  auto fc = square::finite_count(Lx, Ly, Jx, Jy, beta, h);
   auto ff = square::finite(Lx, Ly, Jx, Jy, beta);
   double eps = 1e-40;
-  EXPECT_TRUE(abs(free_energy(fc, beta) - free_energy(ff, beta)) < eps);
-  EXPECT_TRUE(abs(energy(fc, beta) - energy(ff, beta)) < eps);
-  EXPECT_TRUE(abs(specific_heat(fc, beta) - specific_heat(ff, beta)) < eps);
+  EXPECT_TRUE(abs(free_energy(fc, beta, h) - free_energy(ff, beta)) < eps);
+  EXPECT_TRUE(abs(energy(fc, beta, h) - energy(ff, beta)) < eps);
+  EXPECT_TRUE(abs(specific_heat(fc, beta, h) - specific_heat(ff, beta)) < eps);
 }
 
 TEST(IsingFreeEnergy, SquareFinite2) {
@@ -64,11 +68,13 @@ TEST(IsingFreeEnergy, SquareFinite2) {
   auto Jx = convert<real_t>("1.5");
   auto Jy = convert<real_t>("2.5");
   auto t = convert<real_t>("2");
-  auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
-  auto fc = square::finite_count(Lx, Ly, Jx, Jy, beta);
+  auto vars = boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
+  auto& beta = std::get<0>(vars);
+  auto& h = std::get<1>(vars);
+  auto fc = square::finite_count(Lx, Ly, Jx, Jy, beta, h);
   auto ff = square::finite(Lx, Ly, Jx, Jy, beta);
   double eps = 1e-80;
-  EXPECT_TRUE(abs(free_energy(fc, beta) - free_energy(ff, beta)) < eps);
-  EXPECT_TRUE(abs(energy(fc, beta) - energy(ff, beta)) < eps);
-  EXPECT_TRUE(abs(specific_heat(fc, beta) - specific_heat(ff, beta)) < eps);
+  EXPECT_TRUE(abs(free_energy(fc, beta, h) - free_energy(ff, beta)) < eps);
+  EXPECT_TRUE(abs(energy(fc, beta, h) - energy(ff, beta)) < eps);
+  EXPECT_TRUE(abs(specific_heat(fc, beta, h) - specific_heat(ff, beta)) < eps);
 }
