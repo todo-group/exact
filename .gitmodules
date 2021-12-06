@@ -1,9 +1,0 @@
-[submodule "googletest"]
-	path = googletest
-	url = https://github.com/google/googletest
-[submodule "standards"]
-	path = standards
-	url = https://github.com/todo-group/standards.git
-[submodule "lattice"]
-	path = lattice
-	url = https://github.com/todo-group/lattice.git
