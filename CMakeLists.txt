@@ -9,18 +9,15 @@ option(EXACT_BUILD_EXAMPLES "Build all exact's examples." ON)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
+include(eigen3)
 include(googletest)
 include(standards)
 include(lattice)
-FetchContent_MakeAvailable(googletest standards lattice)
-include_directories(${standards_SOURCE_DIR} ${lattice_SOURCE_DIR})
+FetchContent_MakeAvailable(${FetchContents})
+include_directories(${FetchContent_includes})
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/exact-config.cmake.in
   ${PROJECT_BINARY_DIR}/cmake/exact-config.cmake @ONLY)
-
-# Eigen3
-find_package(Eigen3 REQUIRED)
-include(${EIGEN3_USE_FILE})
 
 # Boost
 find_package(Boost REQUIRED)
