@@ -25,4 +25,5 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 add_subdirectory(ising)
 add_subdirectory(afh)
+add_subdirectory(tfi)
 add_subdirectory(gallery)

@@ -3,15 +3,15 @@
 * Numerically exact calculation of critical temperature of two-dimensional Ising models (ising/tc)
 * Numerically exact calculation of free energy, energy, and specific heat of two-dimensional (finite-size/inifinit-size) Ising models (ising/free_energy)
 * Numerically exact calculation of density of state of two-dimensional finite-size Ising model (ising/dos)
-* Numerically exact calculation of free energy, gap, and entropy quantum antiferromagnetic Heisenberg chain (afh/free_energy)
+* Numerically exact calculation of free energy, gap, and entropy of quantum antiferromagnetic Heisenberg chain (afh/free_energy)
+* Numerically exact calculation of ground-state energy of transverse-field Ising model (tfi/energy)
 
-Multi-precision calculation is supported in ising/tc and ising/free_energy.
+Multi-precision calculation is supported in ising/tc, ising/free_energy, tfi/energy.
 
 ## Prerequisites
 
 * C++14 compiler
 * CMake https://cmake.org
-* Eigen https://eigen.tuxfamily.org
 * Boost https://www.boost.org
 
 ## Compile & test

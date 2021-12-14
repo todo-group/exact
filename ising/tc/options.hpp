@@ -24,7 +24,7 @@ struct options2 {
   std::string Jx, Jy;
   options2(unsigned argc, char *argv[]) : valid(true), prec(15), Jx("1"), Jy("1") {
     for (unsigned i = 1; i < argc; ++i) {
-      if (argv[i] == "-h" || argv[i] == "--help") { std::cerr << help(argv[0]); return; }
+      if (std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help") { std::cerr << help(argv[0]); return; }
       switch (argv[i][0]) {
       case '-' :
         switch (argv[i][1]) {
@@ -60,7 +60,7 @@ struct options3 {
   std::string Ja, Jb, Jc;
   options3(unsigned argc, char *argv[]) : valid(true), prec(15), Ja("1"), Jb("1"), Jc("1") {
     for (unsigned i = 1; i < argc; ++i) {
-      if (argv[i] == "-h" || argv[i] == "--help") { std::cerr << help(argv[0]); return; }
+      if (std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help") { std::cerr << help(argv[0]); return; }
       switch (argv[i][0]) {
       case '-' :
         switch (argv[i][1]) {

@@ -24,7 +24,7 @@ struct options {
   options(unsigned argc, char *argv[]) : valid(true) {
     switch (argc) {
     case 2:
-      if (argv[1] == "-h" || argv[1] == "--help")
+      if (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")
         std::cerr << help(argv[0]);
       else
         Lx = Ly = std::atol(argv[1]);
