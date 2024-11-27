@@ -9,19 +9,16 @@ option(EXACT_BUILD_EXAMPLES "Build all exact's examples." ON)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
+include(boost)
 include(eigen3)
 include(googletest)
 include(standards)
 include(lattice)
 FetchContent_MakeAvailable(${FetchContents})
-include_directories(${FetchContent_includes})
+# include_directories(${FetchContent_includes})
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/exact-config.cmake.in
   ${PROJECT_BINARY_DIR}/cmake/exact-config.cmake @ONLY)
-
-# Boost
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
 
 add_subdirectory(ising)
 add_subdirectory(afh)
