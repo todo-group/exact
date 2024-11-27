@@ -275,6 +275,7 @@ class numeric_limits<mp_wrapper<T>> {
 public:
   static constexpr bool is_specialized = numeric_limits<T>::is_specialized;
 
+  static constexpr mp_wrapper<T> denorm_min() { return numeric_limits<T>::denorm_min(); }
   static constexpr mp_wrapper<T> epsilon() { return numeric_limits<T>::epsilon(); }
   static constexpr mp_wrapper<T> infinity() { return numeric_limits<T>::infinity(); }
   static constexpr mp_wrapper<T> lowest() { return numeric_limits<T>::lowest(); }
