@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+#include <iomanip>
 #include <gtest/gtest.h>
 #include "afh/free_energy/chain_finite.hpp"
 
