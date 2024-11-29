@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include "square/transfer_matrix.hpp"
+#include "ising/square/transfer_matrix.hpp"
 
 int main(int argc, char **argv) {
   int L; // system size
@@ -31,11 +31,10 @@ int main(int argc, char **argv) {
   std::cout << "# L = " << L << std::endl
             << "# J = " << J << std::endl
             << "# H = " << H << std::endl;
-  lattice::square lat(L, L);
   std::cout << std::scientific << std::setprecision(11);
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
-    double f = ising::square::transfer_matrix::free_energy_density(beta, lat, J, H);
+    double f = ising::square::transfer_matrix::free_energy_density(beta, L, L, J, H);
     std::cout << t << ' ' << f << std::endl;
   }
 }

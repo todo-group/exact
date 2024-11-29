@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include "square/free_energy_finite.hpp"
+#include "ising/square/free_energy_finite.hpp"
 
 int main(int argc, char **argv) {
   int L; // system size

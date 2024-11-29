@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <tuple>
 #include <vector>
-#include <lse/exp_number.hpp>
+#include <standards/exp_number.hpp>
 
 #ifndef ISING_COUNTING_HPP
 #define ISING_COUNTING_HPP
@@ -40,18 +40,18 @@ public:
     if (field.size() > 0 && field.size() != lat.num_sites())
       throw(std::invalid_argument("inconsitent table size of external field"));
     unsigned long num_states = 1 << lat.num_sites();
-    lse::exp_double sum = 0;
+    standards::exp_double sum = 0;
     for (unsigned long c = 0; c < num_states; ++c) {
-      lse::exp_double weight = 1;
+      standards::exp_double weight = 1;
       for (unsigned int b = 0; b < lat.num_bonds(); ++b) {
         int ci = (c >> lat.source(b)) & 1;
         int cj = (c >> lat.target(b)) & 1;
-        weight *= lse::exp_value(beta * inter[b] * (1 - 2 * (ci ^ cj)));
+        weight *= standards::exp_number<double>(beta * inter[b] * (1 - 2 * (ci ^ cj)));
       }
       if (field.size()) {
         for (unsigned int s = 0; s < lat.num_sites(); ++s) {
           int c0 = (c >> s) & 1;
-          weight *= lse::exp_value(beta * field[s] * (1 - 2 * c0));
+          weight *= standards::exp_number<double>(beta * field[s] * (1 - 2 * c0));
         }
       }
       sum += weight;
@@ -72,26 +72,26 @@ public:
     if (field.size() > 0 && field.size() != lat.num_sites())
       throw(std::invalid_argument("inconsitent table size of external field"));
     unsigned long num_states = 1 << lat.num_sites();
-    lse::exp_double sum = 0;
-    lse::exp_double sum_m1 = 0;
-    lse::exp_double sum_m2 = 0;
-    lse::exp_double sum_m3 = 0;
-    lse::exp_double sum_m4 = 0;
+    standards::exp_double sum = 0;
+    standards::exp_double sum_m1 = 0;
+    standards::exp_double sum_m2 = 0;
+    standards::exp_double sum_m3 = 0;
+    standards::exp_double sum_m4 = 0;
     for (unsigned long c = 0; c < num_states; ++c) {
       double m = 0;
       for (unsigned int s = 0; s < lat.num_sites(); ++s) {
         m += 1.0- 2 * ((c >> s) & 1);
       }
-      lse::exp_double weight = 1;
+      standards::exp_double weight = 1;
       for (unsigned int b = 0; b < lat.num_bonds(); ++b) {
         int ci = (c >> lat.source(b)) & 1;
         int cj = (c >> lat.target(b)) & 1;
-        weight *= lse::exp_value(beta * inter[b] * (1 - 2 * (ci ^ cj)));
+        weight *= standards::exp_number<double>(beta * inter[b] * (1 - 2 * (ci ^ cj)));
       }
       if (field.size()) {
         for (unsigned int s = 0; s < lat.num_sites(); ++s) {
           int c0 = (c >> s) & 1;
-          weight *= lse::exp_value(beta * field[s] * (1 - 2 * c0));
+          weight *= standards::exp_number<double>(beta * field[s] * (1 - 2 * c0));
         }
       }
       sum += weight;

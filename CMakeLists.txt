@@ -23,4 +23,5 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/exact-config.cmake.in
 add_subdirectory(ising)
 add_subdirectory(afh)
 add_subdirectory(tfi)
+add_subdirectory(test/ising)
 add_subdirectory(gallery)

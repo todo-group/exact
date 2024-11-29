@@ -12,8 +12,7 @@
 #include <cmath>
 #include <vector>
 #include <boost/array.hpp>
-#include <lattice/square.hpp>
-#include <lse/exp_number.hpp>
+#include <standards/exp_number.hpp>
 
 #ifndef ISING_SQUARE_TRANSFER_MATRIX_HPP
 #define ISING_SQUARE_TRANSFER_MATRIX_HPP
@@ -23,7 +22,7 @@ namespace square {
 
 struct transfer_matrix {
 public:
-  typedef lse::exp_double exp_double;
+  typedef standards::exp_double exp_double;
   template<typename VEC>
   static exp_double product_D(double beta, std::vector<double> const& inter_x,
                                    std::vector<double> const& field, VEC& v) {
@@ -33,7 +32,7 @@ public:
     std::vector<boost::array<double, 2> > weight(width);
     for (int b = 0; b < width; ++b) {
       double offset = std::abs(beta * inter_x[b]);
-      normal *= lse::exp_value(offset);
+      normal *= standards::exp_number<double>(offset);
       weight[b][0] = std::exp(beta * inter_x[b] - offset);
       weight[b][1] = std::exp(-beta * inter_x[b] - offset);
     }
@@ -49,7 +48,7 @@ public:
     if (field.size()) {
       for (int s = 0; s < width; ++s) {
         double offset = std::abs(beta * field[s]);
-        normal *= lse::exp_value(offset);
+        normal *= standards::exp_number<double>(offset);
         weight[s][0] = std::exp(beta * field[s] - offset);
         weight[s][1] = std::exp(-beta * field[s] - offset);
       }
@@ -76,7 +75,7 @@ public:
     boost::array<double, 2> weight;
     for (int s = 0; s < width; ++s) {
       double offset = std::abs(beta * inter_y[s]);
-      normal *= lse::exp_value(offset);
+      normal *= standards::exp_number<double>(offset);
       weight[0] = std::exp(beta * inter_y[s] - offset);
       weight[1] = std::exp(-beta * inter_y[s] - offset);
       for (int c0 = 0; c0 < dim; ++c0) {
@@ -92,11 +91,9 @@ public:
     return normal;
   }
 
-  static double free_energy(double beta, lattice::square const& lat,
+  static double free_energy(double beta, int Lx, int Ly,
                             std::vector<double> const& inter,
                             std::vector<double> const& field = std::vector<double>(0)) {
-    int Lx = lat.get_length_x();
-    int Ly = lat.get_length_y();
     std::vector<double> inter_x(Lx), inter_y(Lx), field_x(field.size() > 0 ? Lx : 0);
     int dim = 1 << Lx;
     std::vector<double> v(dim);
@@ -124,21 +121,21 @@ public:
     return -log(sum) / beta;
   }
 
-  static double free_energy(double beta, lattice::square const& lat, double J, double H = 0.0) {
-    std::vector<double> inter(lat.num_bonds(), J);
-    std::vector<double> field((H != 0.0) ? lat.num_sites() : 0, H);
-    return free_energy(beta, lat, inter, field);
+  static double free_energy(double beta, int Lx, int Ly, double J, double H = 0.0) {
+    std::vector<double> inter(2 * Lx * Ly, J);
+    std::vector<double> field((H != 0.0) ? (Lx * Ly) : 0, H);
+    return free_energy(beta, Lx, Ly, inter, field);
   }
 
-  static double free_energy_density(double beta, lattice::square const& lat,
+  static double free_energy_density(double beta, int Lx, int Ly,
                                     std::vector<double> const& inter,
                                     std::vector<double> const& field = std::vector<double>(0)) {
-    return free_energy(beta, lat, inter, field) / lat.num_sites();
+    return free_energy(beta, Lx, Ly, inter, field) / (Lx * Ly);
   }
 
-  static double free_energy_density(double beta, lattice::square const& lat, double J,
+  static double free_energy_density(double beta, int Lx, int Ly, double J,
                                     double H = 0.0) {
-    return free_energy(beta, lat, J, H) / lat.num_sites();
+    return free_energy(beta, Lx, Ly, J, H) / (Lx * Ly);
   }
 };
 

@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
-#include "triangle/infinite.hpp"
+#include "ising/free_energy/triangular.hpp"
 
 int main(int argc, char **argv) {
   typedef double real_t;
@@ -34,9 +34,8 @@ int main(int argc, char **argv) {
   std::cout << "# triangular lattice Ising model\n";
   std::cout << "# Ja, Jb, Jc, T, free energy density, energy density, specific heat\n";
   for (real_t t = t_min; t <= t_max; t += t_step) {
-    real_t beta = 1 / t;
-    auto result = ising::triangle::infinite(beta, Ja, Jb, Jc);
-    std::cout << Ja << ' ' << Jb << ' ' << Jc << ' ' << t << ' ' << std::get<0>(result) << ' '
-              << std::get<1>(result) << ' ' << std::get<2>(result) << std::endl;
+    auto beta = boost::math::differentiation::make_fvar<real_t, 2>(1 / t);
+    auto result = ising::free_energy::triangular::infinite(Ja, Jb, Jc, beta);
+    std::cout << Ja << ' ' << Jb << ' ' << Jc << ' ' << t << ' ' << result << std::endl;
   }
 }

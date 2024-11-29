@@ -26,7 +26,7 @@ TEST(TcTest, Square1) {
     real_t t = uniform(engine) * ising::tc::square(Jx, Jy);
     auto beta = ad::make_fvar<real_t, 2>(1 / t);
     auto rf = ising::free_energy::square::finite(4, 2, Jx, Jy, beta);
-    auto rc = ising::free_energy::square::finite_count(4, 2, Jx, Jy, beta);
+    auto rc = ising::free_energy::square::finite_count(4, 2, Jx, Jy, beta, 0);
     EXPECT_NEAR(ising::free_energy::free_energy(rf, beta), ising::free_energy::free_energy(rc, beta), 1e-10);
     EXPECT_NEAR(ising::free_energy::energy(rf, beta), ising::free_energy::energy(rc, beta), 1e-10);
     EXPECT_NEAR(ising::free_energy::specific_heat(rf, beta), ising::free_energy::specific_heat(rc, beta), 1e-10);
@@ -40,7 +40,7 @@ TEST(TcTest, Square2) {
     real_t t = uniform(engine) * ising::tc::square(Jx, Jy);
     auto beta = ad::make_fvar<real_t, 2>(1 / t);
     auto rf = ising::free_energy::square::finite(4, 4, Jx, Jy, beta);
-    auto rc = ising::free_energy::square::finite_count(4, 4, Jx, Jy, beta);
+    auto rc = ising::free_energy::square::finite_count(4, 4, Jx, Jy, beta, 0);
     EXPECT_NEAR(ising::free_energy::free_energy(rf, beta), ising::free_energy::free_energy(rc, beta), 1e-10);
     EXPECT_NEAR(ising::free_energy::energy(rf, beta), ising::free_energy::energy(rc, beta), 1e-10);
     EXPECT_NEAR(ising::free_energy::specific_heat(rf, beta), ising::free_energy::specific_heat(rc, beta), 1e-10);

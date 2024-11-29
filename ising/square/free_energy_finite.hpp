@@ -15,16 +15,16 @@
 #define ISING_SQUARE_FREE_ENERGY_FINITE_HPP
 
 #include <vector>
-#include <lse/exp_number.hpp>
+#include <standards/exp_number.hpp>
 
 namespace {
   
-inline lse::exp_double cosh_value(double x) {
-  return (lse::exp_value(x) + lse::exp_value(-x)) / 2;
+inline standards::exp_double cosh_value(double x) {
+  return (standards::exp_number<double>(x) + standards::exp_number<double>(-x)) / 2;
 }
 
-inline lse::exp_double sinh_value(double x) {
-  return (lse::exp_value(x) - lse::exp_value(-x)) / 2;
+inline standards::exp_double sinh_value(double x) {
+  return (standards::exp_number<double>(x) - standards::exp_number<double>(-x)) / 2;
 }
 
 }

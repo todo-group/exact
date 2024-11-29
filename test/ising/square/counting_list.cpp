@@ -11,8 +11,8 @@
 
 #include <iomanip>
 #include <iostream>
-#include <lattice/square.hpp>
-#include "counting.hpp"
+#include <lattice/graph.hpp>
+#include "ising/counting.hpp"
 
 int main() {
   int Lx, Ly; // system size
@@ -20,7 +20,7 @@ int main() {
   double t_min, t_max, t_step;
 
   std::cin >> Lx >> Ly;
-  lattice::square lat(Lx, Ly);
+  auto lat = lattice::graph(lattice::basis::simple(2), lattice::unitcell::simple(2), lattice::extent(Lx, Ly));
   inter.resize(lat.num_bonds());
   for (std::size_t b = 0; b < lat.num_bonds(); ++b) std::cin >> inter[b];
   field.resize(lat.num_sites());

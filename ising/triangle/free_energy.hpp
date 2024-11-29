@@ -16,7 +16,7 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <integral/simpson.hpp>
+#include <standards/simpson.hpp>
 
 namespace {
 
@@ -45,7 +45,7 @@ inline double free_energy_density(double beta, double Ja, double Jb, double Jc, 
   if (beta <= 0)
     throw(std::invalid_argument("beta should be positive"));
   func f(beta, Ja, Jb, Jc);
-  return - (std::log(2.0) + integral::simpson_2d(f, 0, 0, 2 * M_PI, 2 * M_PI, Nint, Nint)) / beta;
+  return - (std::log(2.0) + standards::simpson_2d(f, 0.0, 0.0, 2 * M_PI, 2 * M_PI, Nint, Nint)) / beta;
 }
 
 } // end namespace triangle

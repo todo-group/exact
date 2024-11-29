@@ -12,8 +12,8 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include <lattice/square.hpp>
-#include "counting.hpp"
+#include <lattice/graph.hpp>
+#include "ising/counting.hpp"
 
 int main(int argc, char **argv) {
   int L; // system size
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
             << "# J = " << J << std::endl
             << "# H = " << H << std::endl
             << "# T <m> <m^2> <m^3> <m^4>" << std::endl;
-  lattice::square lat(L, L);
+  auto lat = lattice::graph::simple(2, L);
   std::cout << std::scientific << std::setprecision(11);
   for (double t = t_min; t <= t_max; t += t_step) {
     double beta = 1 / t;
