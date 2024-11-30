@@ -26,7 +26,7 @@
 #include "options.hpp"
 #include "square.hpp"
 
-template<typename T>
+template <typename T>
 void calc(const options2f& opt) {
   using namespace ising::free_energy;
   typedef T real_t;
@@ -40,39 +40,48 @@ void calc(const options2f& opt) {
     Tmax = convert<real_t>(opt.Tmax);
     dT = convert<real_t>(opt.dT);
   }
-  if (Tmin < 0 || Tmax < 0) throw(std::invalid_argument("Temperature should be positive"));
-  if (Tmin > Tmax) throw(std::invalid_argument("Tmax should be larger than Tmin"));
-  if (dT <= 0) throw(std::invalid_argument("dT should be positive"));
-  std::cout << std::scientific << std::setprecision(std::numeric_limits<real_t>::digits10)
+  if (Tmin < 0 || Tmax < 0)
+    throw(std::invalid_argument("Temperature should be positive"));
+  if (Tmin > Tmax)
+    throw(std::invalid_argument("Tmax should be larger than Tmin"));
+  if (dT <= 0)
+    throw(std::invalid_argument("dT should be positive"));
+  std::cout << std::scientific
+            << std::setprecision(std::numeric_limits<real_t>::digits10)
             << "# lattice: square\n"
-            << "# precision: " << std::numeric_limits<real_t>::digits10 << std::endl
+            << "# precision: " << std::numeric_limits<real_t>::digits10
+            << std::endl
             << "# Lx Ly Jx Jy T 1/T F/N E/N C/N M2/N2\n";
   for (auto t = Tmin; t < Tmax + 1e-4 * dT; t += dT) {
-    auto vars = boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
+    auto vars =
+        boost::math::differentiation::make_ftuple<real_t, 2, 2>(1 / t, 0);
     auto& beta = std::get<0>(vars);
     auto& h = std::get<1>(vars);
     auto f = square::finite_count(opt.Lx, opt.Ly, Jx, Jy, beta, h);
-    std::cout << opt.Lx << ' ' << opt.Ly << ' ' << Jx << ' ' << Jy << ' '
-              << t << ' ' << (1 / t) << ' '
-              << free_energy(f, beta, h) << ' ' << energy(f, beta, h) << ' '
-              << specific_heat(f, beta, h) << ' ' << magnetization2(f, beta, h)
-              << std::endl;
+    std::cout << opt.Lx << ' ' << opt.Ly << ' ' << Jx << ' ' << Jy << ' ' << t
+              << ' ' << (1 / t) << ' ' << free_energy(f, beta, h) << ' '
+              << energy(f, beta, h) << ' ' << specific_heat(f, beta, h) << ' '
+              << magnetization2(f, beta, h) << std::endl;
   }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   using namespace boost::multiprecision;
   options2f opt(argc, argv);
-  if (!opt.valid) return 127;
+  if (!opt.valid)
+    return 127;
   if (opt.prec <= std::numeric_limits<float>::digits10) {
     calc<float>(opt);
   } else if (opt.prec <= std::numeric_limits<double>::digits10) {
     calc<double>(opt);
-  } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_50>>::digits10) {
+  } else if (opt.prec <=
+             std::numeric_limits<mp_wrapper<cpp_dec_float_50>>::digits10) {
     calc<mp_wrapper<cpp_dec_float_50>>(opt);
-  } else if (opt.prec <= std::numeric_limits<mp_wrapper<cpp_dec_float_100>>::digits10) {
+  } else if (opt.prec <=
+             std::numeric_limits<mp_wrapper<cpp_dec_float_100>>::digits10) {
     calc<mp_wrapper<cpp_dec_float_100>>(opt);
   } else {
-    std::cerr << "Error: Required precision is too high\n"; return 127;
+    std::cerr << "Error: Required precision is too high\n";
+    return 127;
   }
 }

@@ -31,7 +31,7 @@ TEST(IsingFreeEnergy, SquareCount0) {
   square::transfer_matrix<double>::result_t beta;
   beta.set(0, 0, 1 / t);
   auto f = square::transfer_matrix<double>::calc(Lx, Ly, Jx, Jy, 1 / t, h);
-  EXPECT_NEAR(-4.087359662653047e+00, free_energy(f, beta, h), 1e-10); 
+  EXPECT_NEAR(-4.087359662653047e+00, free_energy(f, beta, h), 1e-10);
   EXPECT_NEAR(-3.994108759068211e+00, energy(f, beta, h), 1e-10);
   EXPECT_NEAR(2.452622208849045e-02, specific_heat(f, beta, h), 1e-10);
   EXPECT_NEAR(1.597700713244840e+01, magnetization2(f, beta, h), 1e-10);
