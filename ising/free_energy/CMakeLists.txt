@@ -1,6 +1,6 @@
 set(PF ising_free_energy)
 
-set(PROGS square square_count square_finite triangular)
+set(PROGS square square_count square_finite square_tm triangular)
 foreach(name ${PROGS})
   set(target_name ${PF}_${name})
   add_executable(${target_name} ${name}.cpp)
@@ -8,7 +8,7 @@ foreach(name ${PROGS})
   target_link_libraries(${target_name} lattice standards Eigen3::Eigen Boost::boost)
 endforeach(name)
 
-set(PROGS square_gt square_count_gt square_finite_gt)
+set(PROGS square_gt square_count_gt square_finite_gt square_tm_gt)
 foreach(name ${PROGS})
   set(target_name ${PF}_${name})
   add_executable(${target_name} ${name}.cpp)

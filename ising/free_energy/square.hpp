@@ -158,8 +158,6 @@ inline boost::math::differentiation::promote<U, W> finite_count(I Lx, I Ly, T Jx
   typedef boost::math::differentiation::promote<U, W> value_t;
   if (Lx <= 0 || Ly <= 0)
     throw(std::invalid_argument("Lx and Ly should be positive"));
-  if (Jx <= 0 || Jy <= 0)
-    throw(std::invalid_argument("Jx and Jy should be positive"));
 
   auto basis = lattice::basis::simple(2);
   auto unitcell = lattice::unitcell(2);
